@@ -1,6 +1,7 @@
 import Reveal from './Reveal'
 import SocialIcons from './SocialIcons'
 import { useI18n } from '../context/LanguageContext'
+import { Link } from 'react-router-dom'
 
 export default function Contact() {
   const { t } = useI18n()
@@ -35,12 +36,12 @@ export default function Contact() {
                   'https://wa.me/992810971',
                   'mailto:reservas@plazatrujillo.com',
                 ]} />
-                <a
-                  href="https://plazatrujillo.com/contactenos/"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                <Link
+                  to="/contacto"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#F26A4B] text-white rounded hover:bg-[#8C0808]"
                 >
                   {t('contact.write_us')}
-                </a>
+                </Link>
               </div>
             </Reveal>
           </div>

@@ -5,11 +5,13 @@ import RoomsPage from './pages/RoomsPage'
 import AboutPage from './pages/AboutPage'
 import TourismPage from './pages/TourismPage'
 import ContactPage from './pages/ContactPage'
+import ChatWidget from './components/ChatWidget'
 
 export default function App() {
   return (
     <LanguageProvider>
       <BrowserRouter>
+        <ChatWidget />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/habitaciones" element={<RoomsPage />} />

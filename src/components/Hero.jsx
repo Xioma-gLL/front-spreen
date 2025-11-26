@@ -15,13 +15,13 @@ export default function Hero() {
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: 'url(https://commons.wikimedia.org/wiki/Special:FilePath/PLAZA%20DE%20ARMAS%20DE%20TRUJILLO.jpg)' }}
       ></div>
-      <div className="absolute inset-0 bg-gradient-to-br from-amber-50/70 via-white/60 to-indigo-50/60"></div>
+      <div className="absolute inset-0 bg-gradient-to-br" style={{ background: 'linear-gradient(180deg, rgba(89,17,23,0.5) 0%, rgba(242,106,75,0.12) 40%, rgba(242,242,242,0.04) 100%)' }}></div>
       <div className="relative max-w-6xl mx-auto px-4 py-20 text-center">
         <Reveal>
-          <h2 className="text-lg tracking-wide text-gray-700">{t('hero.subtitle')}</h2>
+          <h2 className="text-lg tracking-wide text-[#F2F2F2]">{t('hero.subtitle')}</h2>
         </Reveal>
         <Reveal delay={100}>
-          <h1 className="mt-2 text-4xl md:text-5xl font-bold text-gray-900">{t('hero.title')}</h1>
+          <h1 className="mt-2 text-4xl md:text-5xl font-bold text-[#F2F2F2]">{t('hero.title')}</h1>
         </Reveal>
         <Reveal delay={200}>
           <div className="mt-8 mx-auto max-w-4xl">
@@ -71,7 +71,7 @@ export default function Hero() {
                   </div>
                 </div>
                 <div className="p-2 flex items-center">
-                  <button type="button" className="w-full md:w-auto md:min-w-28 px-4 py-3 bg-blue-600 text-white rounded-xl md:rounded-none md:rounded-r-2xl font-semibold hover:bg-blue-700">
+                  <button type="button" className="w-full md:w-auto md:min-w-28 px-4 py-3 bg-[#F26A4B] text-white rounded-none md:rounded-none md:rounded-r-2xl font-semibold hover:bg-[#F21905]">
                     {t('hero.search.search')}
                   </button>
                 </div>

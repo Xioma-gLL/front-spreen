@@ -1,17 +1,16 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { LanguageProvider } from './context/LanguageContext'
+import { AuthProvider } from './context/AuthContext'
 import Home from './pages/Home'
 import RoomsPage from './pages/RoomsPage'
 import AboutPage from './pages/AboutPage'
 import TourismPage from './pages/TourismPage'
 import ContactPage from './pages/ContactPage'
-import ChatWidget from './components/ChatWidget'
 
 export default function App() {
   return (
     <LanguageProvider>
       <BrowserRouter>
-        <ChatWidget />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/habitaciones" element={<RoomsPage />} />

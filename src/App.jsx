@@ -1,23 +1,35 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { LanguageProvider } from './context/LanguageContext'
+import { AuthProvider } from './context/AuthContext'
 import Home from './pages/Home'
 import RoomsPage from './pages/RoomsPage'
 import AboutPage from './pages/AboutPage'
 import TourismPage from './pages/TourismPage'
 import ContactPage from './pages/ContactPage'
+import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import UserProfile from './pages/UserProfile'
 
 export default function App() {
   return (
     <LanguageProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/habitaciones" element={<RoomsPage />} />
-          <Route path="/quienes-somos" element={<AboutPage />} />
-          <Route path="/turismo" element={<TourismPage />} />
-          <Route path="/contacto" element={<ContactPage />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/habitaciones" element={<RoomsPage />} />
+            <Route path="/quienes-somos" element={<AboutPage />} />
+            <Route path="/turismo" element={<TourismPage />} />
+            <Route path="/contacto" element={<ContactPage />} />
+            {/* Rutas de autenticación */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/registro" element={<RegisterPage />} />
+            <Route path="/recuperar-contrasena" element={<ForgotPasswordPage />} />
+            <Route path="/perfil" element={<UserProfile />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </LanguageProvider>
   )
 }

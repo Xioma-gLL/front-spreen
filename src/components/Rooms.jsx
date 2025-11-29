@@ -1,29 +1,22 @@
-const rooms = [
-  {
-    key: 'single',
-    desc: { es: 'Una cama individual.', en: 'One single bed.' },
-    img: 'http://plazatrujillo.com/wp-content/uploads/2025/09/WhatsApp-Image-2025-09-09-at-11.21.52-AM-1.jpg',
-    href: 'https://plazatrujillo.com/habitaciones/',
-  },
-  {
-    key: 'matrimonial',
-    desc: { es: 'Una cama de dos plazas.', en: 'One double bed.' },
-    img: 'http://plazatrujillo.com/wp-content/uploads/2025/09/WhatsApp-Image-2025-09-16-at-2.44.35-PM.jpeg',
-    href: 'https://plazatrujillo.com/habitaciones/',
-  },
-  {
-    key: 'double',
-    desc: { es: 'Dos camas individuales.', en: 'Two single beds.' },
-    img: 'http://plazatrujillo.com/wp-content/uploads/2025/09/WhatsApp-Image-2025-09-09-at-11.21.47-AM.jpeg',
-    href: 'https://plazatrujillo.com/habitaciones/',
-  },
-]
-
+import React, { useState } from 'react'
+import ReservationModal from './ReservationModal'
 import Reveal from './Reveal'
 import { useI18n } from '../context/LanguageContext'
+import roomsData from '../data/rooms'
+import { useAuth } from '../context/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
-export default function Rooms() {
+// Rooms data is imported from `../data/rooms` (roomsData). We don't need the example array here.
+
+
+export default function Rooms({ roomsOverride = null }) {
   const { t, lang } = useI18n()
+  const navigate = useNavigate()
+  const { isAuthenticated } = useAuth()
+  const [openDetails, setOpenDetails] = useState(false)
+  const [openReservation, setOpenReservation] = useState(false)
+  const [selected, setSelected] = useState(null)
+  const rooms = roomsOverride || roomsData
   return (
     <section className="py-12">
       <div className="max-w-6xl mx-auto px-4">
@@ -40,22 +33,27 @@ export default function Rooms() {
         </div>
         
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {rooms.map((r, i) => (
+          {rooms.length === 0 && (
+            <div className="p-8 text-center text-gray-600 col-span-full">
+              {lang === 'es' ? 'No hay habitaciones disponibles para las fechas seleccionadas.' : 'No rooms available for the selected dates.'}
+            </div>
+          )}
+          {rooms.length > 0 && rooms.map((r, i) => (
             <Reveal key={r.key} delay={i * 100} className="group">
               <div className="rounded-xl overflow-hidden border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow">
                 <div className="overflow-hidden">
                   <img src={r.img} alt={t(`rooms.${r.key}`)} className="h-56 w-full object-cover transform group-hover:scale-105 transition-transform duration-300" />
                 </div>
                 <div className="p-5">
-                  <h3 className="text-lg font-semibold text-gray-900">{t(`rooms.${r.key}`)}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">{r.title}</h3>
                   <p className="mt-1 text-gray-600">{r.desc[lang]}</p>
-                  <a href={r.href} className="mt-4 inline-block px-4 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-700">
+                  <button onClick={() => { setSelected(r); setOpenDetails(true); setOpenReservation(false); }} className="mt-4 inline-block px-4 py-2 rounded bg-[#591117] text-white hover:bg-[#8C0808] cursor-pointer">
                     {t('rooms.details')}
-                  </a>
+                  </button>
                 </div>
               </div>
             </Reveal>
-          ))}
+            ))}
         </div>
         
         {/* Additional information section */}
@@ -98,12 +96,19 @@ export default function Rooms() {
             </div>
             <div className="p-4 grid gap-4 md:grid-cols-2">
               <div>
-                <img src={selected.img} alt={selected.title} className="w-full h-64 object-cover rounded" />
+                <img src={selected.img} alt={t(`rooms.${selected.key}`)} className="w-full h-64 object-cover rounded" />
               </div>
               <div>
                 <p className="text-gray-700 mb-4">{selected.desc[lang]}</p>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => { setOpenReservation(true); setOpenDetails(false); }} className="px-4 py-2 rounded bg-[#591117] text-white">Reservar</button>
+                  <button onClick={() => {
+                      if (!isAuthenticated) {
+                        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', message: 'Por favor inicia sesión para reservar', duration: 3500 } }))
+                        navigate('/login')
+                        return
+                      }
+                      setOpenReservation(true); setOpenDetails(false);
+                    }} className="px-4 py-2 rounded bg-[#591117] text-white cursor-pointer">Reservar</button>
                   <button onClick={() => setOpenDetails(false)} className="px-4 py-2 rounded border">Cerrar</button>
                 </div>
               </div>

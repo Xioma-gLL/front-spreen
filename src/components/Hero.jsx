@@ -1,9 +1,11 @@
 import Reveal from './Reveal'
 import { useI18n } from '../context/LanguageContext'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export default function Hero() {
   const { t, lang } = useI18n()
+  const navigate = useNavigate()
   const [guests, setGuests] = useState(2)
   const [rooms, setRooms] = useState(1)
   const [openGuests, setOpenGuests] = useState(false)
@@ -31,7 +33,7 @@ export default function Hero() {
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 text-gray-500"><path d="M7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm10 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM4 20v-1a5 5 0 0 1 5-5h6a5 5 0 0 1 5 5v1H4Z"/></svg>
                   <div className="flex-1 flex flex-col items-center">
                     <div className="text-xs text-gray-500 text-center">{t('hero.search.guests_label')}</div>
-                    <button type="button" className="mt-1 text-center" onClick={() => setOpenGuests((v) => !v)}>
+                    <button type="button" className="mt-1 text-center cursor-pointer" onClick={() => setOpenGuests((v) => !v)}>
                       <span className="font-medium text-gray-900">{lang === 'en' ? `${guests} guests, ${rooms} room${rooms > 1 ? 's' : ''}` : `${guests} huéspedes, ${rooms} habitación${rooms > 1 ? 'es' : ''}`}</span>
                     </button>
                   </div>
@@ -40,21 +42,21 @@ export default function Hero() {
                       <div className="flex items-center justify-between">
                         <div className="text-gray-700">{t('hero.search.guests_label')}</div>
                         <div className="flex items-center gap-2">
-                          <button type="button" className="h-8 w-8 rounded border grid place-items-center" onClick={() => setGuests((g) => Math.max(1, g - 1))}>-</button>
+                          <button type="button" className="h-8 w-8 rounded border grid place-items-center cursor-pointer" onClick={() => setGuests((g) => Math.max(1, g - 1))}>-</button>
                           <div className="w-6 text-center">{guests}</div>
-                          <button type="button" className="h-8 w-8 rounded border grid place-items-center" onClick={() => setGuests((g) => g + 1)}>+</button>
+                          <button type="button" className="h-8 w-8 rounded border grid place-items-center cursor-pointer" onClick={() => setGuests((g) => g + 1)}>+</button>
                         </div>
                       </div>
                       <div className="mt-3 flex items-center justify-between">
                         <div className="text-gray-700">{t('hero.search.rooms_label')}</div>
                         <div className="flex items-center gap-2">
-                          <button type="button" className="h-8 w-8 rounded border grid place-items-center" onClick={() => setRooms((r) => Math.max(1, r - 1))}>-</button>
+                          <button type="button" className="h-8 w-8 rounded border grid place-items-center cursor-pointer" onClick={() => setRooms((r) => Math.max(1, r - 1))}>-</button>
                           <div className="w-6 text-center">{rooms}</div>
-                          <button type="button" className="h-8 w-8 rounded border grid place-items-center" onClick={() => setRooms((r) => r + 1)}>+</button>
+                          <button type="button" className="h-8 w-8 rounded border grid place-items-center cursor-pointer" onClick={() => setRooms((r) => r + 1)}>+</button>
                         </div>
                       </div>
                       <div className="mt-4 text-right">
-                        <button type="button" className="px-3 py-1 rounded bg-indigo-600 text-white" onClick={() => setOpenGuests(false)}>{t('hero.search.done')}</button>
+                        <button type="button" className="px-3 py-1 rounded bg-indigo-600 text-white cursor-pointer" onClick={() => setOpenGuests(false)}>{t('hero.search.done')}</button>
                       </div>
                     </div>
                   )}
@@ -71,9 +73,24 @@ export default function Hero() {
                   </div>
                 </div>
                 <div className="p-2 flex items-center">
-                  <button type="button" className="w-full md:w-auto md:min-w-28 px-4 py-3 bg-[#F26A4B] text-white rounded-none md:rounded-none md:rounded-r-2xl font-semibold hover:bg-[#F21905]">
-                    {t('hero.search.search')}
-                  </button>
+                  <button type="button" className="w-full md:w-auto md:min-w-28 px-4 py-3 bg-[#F26A4B] text-white rounded-none md:rounded-none md:rounded-r-2xl font-semibold hover:bg-[#F21905] cursor-pointer"
+                    onClick={() => {
+                      if (!checkIn || !checkOut) {
+                        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Por favor selecciona fechas', duration: 3000 } }))
+                        return
+                      }
+                      const a = new Date(checkIn)
+                      const b = new Date(checkOut)
+                      if (a >= b) {
+                        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'La fecha de salida debe ser posterior a la de ingreso', duration: 4000 } }))
+                        return
+                      }
+                      const params = new URLSearchParams({ checkIn, checkOut, guests: guests.toString() })
+                      navigate(`/habitaciones?${params.toString()}`)
+                    }}
+                  >
+                      {t('hero.search.search')}
+                    </button>
                 </div>
               </div>
             </div>

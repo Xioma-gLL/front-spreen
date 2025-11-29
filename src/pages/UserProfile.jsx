@@ -1,6 +1,19 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { FaCamera, FaEdit, FaSave, FaTimes } from 'react-icons/fa'
+
+// small inline svg icons
+const IconCamera = ({ className = 'w-3.5 h-3.5' }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 5a7 7 0 100 14 7 7 0 000-14zM4 7h2l1-2h6l1 2h2v11H4V7z"/></svg>
+)
+const IconEdit = ({ className = 'w-4 h-4' }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+)
+const IconSave = ({ className = 'w-4 h-4' }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M17 3H5a2 2 0 00-2 2v14l4-4h10a2 2 0 002-2V5a2 2 0 00-2-2z"/></svg>
+)
+const IconTimes = ({ className = 'w-4 h-4' }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M18.3 5.71a1 1 0 00-1.41 0L12 10.59 7.11 5.7a1 1 0 10-1.41 1.41L10.59 12l-4.9 4.89a1 1 0 101.41 1.42L12 13.41l4.89 4.9a1 1 0 001.42-1.41L13.41 12l4.9-4.89a1 1 0 000-1.4z"/></svg>
+)
 
 export default function UserProfile() {
   const { user, updateProfile, logout } = useAuth()
@@ -53,7 +66,7 @@ export default function UserProfile() {
                   className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover"
                 />
                 <button className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors">
-                  <FaCamera size={14} />
+                  <IconCamera />
                 </button>
               </div>
               <div className="ml-6 mb-4">
@@ -75,11 +88,11 @@ export default function UserProfile() {
                   Información personal
                 </h2>
                 {!isEditing && (
-                  <button
+                    <button
                     onClick={() => setIsEditing(true)}
                     className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                   >
-                    <FaEdit className="mr-2" size={16} />
+                      <IconEdit className="mr-2" />
                     Editar
                   </button>
                 )}
@@ -151,19 +164,19 @@ export default function UserProfile() {
                     />
                   </div>
                   <div className="flex space-x-3">
-                    <button
+                      <button
                       type="submit"
                       className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
                     >
-                      <FaSave className="mr-2" size={16} />
+                      <IconSave className="mr-2" />
                       Guardar
                     </button>
-                    <button
+                      <button
                       type="button"
                       onClick={handleCancel}
                       className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-                    >
-                      <FaTimes className="mr-2" size={16} />
+                      >
+                      <IconTimes className="mr-2" />
                       Cancelar
                     </button>
                   </div>
@@ -220,13 +233,13 @@ export default function UserProfile() {
                 Acciones
               </h3>
               <div className="space-y-3">
-                <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
                   Cambiar contraseña
                 </button>
-                <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
                   Configuración de privacidad
                 </button>
-                <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
                   Notificaciones
                 </button>
                 <button

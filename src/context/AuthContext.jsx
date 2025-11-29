@@ -24,42 +24,45 @@ export function AuthProvider({ children }) {
 
   const login = async (userData) => {
     setIsLoading(true)
-    
-    // Simular proceso de login
-    setTimeout(() => {
-      const user = {
-        id: '1',
-        email: userData.email,
-        firstName: 'Juan',
-        lastName: 'Pérez',
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
-      }
-      
-      setUser(user)
-      setIsAuthenticated(true)
-      localStorage.setItem('user', JSON.stringify(user))
-      setIsLoading(false)
-    }, 1000)
+    // Return a promise so callers can await completion
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log('AuthContext.login called with', userData)
+        const user = {
+          id: '1',
+          email: userData.email,
+          firstName: 'Juan',
+          lastName: 'Pérez',
+          avatar: 'https://images.unsplash.com/photo-1472099645785-5658ab4ff4e?w=150&h=150&fit=crop&crop=face'
+        }
+        setUser(user)
+        setIsAuthenticated(true)
+        localStorage.setItem('user', JSON.stringify(user))
+        setIsLoading(false)
+        resolve(user)
+      }, 1000)
+    })
   }
 
   const register = async (userData) => {
     setIsLoading(true)
-    
-    // Simular proceso de registro
-    setTimeout(() => {
-      const user = {
-        id: Date.now().toString(),
-        email: userData.email,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
-      }
-      
-      setUser(user)
-      setIsAuthenticated(true)
-      localStorage.setItem('user', JSON.stringify(user))
-      setIsLoading(false)
-    }, 1500)
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log('AuthContext.register called with', userData)
+        const user = {
+          id: Date.now().toString(),
+          email: userData.email,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          avatar: 'https://images.unsplash.com/photo-1472099645785-5658ab4ff4e?w=150&h=150&fit=crop&crop=face'
+        }
+        setUser(user)
+        setIsAuthenticated(true)
+        localStorage.setItem('user', JSON.stringify(user))
+        setIsLoading(false)
+        resolve(user)
+      }, 1500)
+    })
   }
 
   const logout = () => {

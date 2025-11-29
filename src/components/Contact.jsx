@@ -38,7 +38,7 @@ export default function Contact() {
                 ]} />
                 <Link
                   to="/contacto"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#F26A4B] text-white rounded hover:bg-[#8C0808]"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#F26A4B] text-white rounded hover:bg-[#8C0808] cursor-pointer"
                 >
                   {t('contact.write_us')}
                 </Link>

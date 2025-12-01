@@ -8,7 +8,6 @@ import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import UserProfile from './pages/UserProfile'
-import TourismPage from './pages/TourismPage'
 import ContactPage from './pages/ContactPage'
 import Toast from './components/Toast'
 

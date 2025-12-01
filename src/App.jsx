@@ -22,7 +22,6 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/habitaciones" element={<RoomsPage />} />
             <Route path="/quienes-somos" element={<AboutPage />} />
-            <Route path="/turismo" element={<TourismPage />} />
             <Route path="/contacto" element={<ContactPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/registro" element={<RegisterPage />} />

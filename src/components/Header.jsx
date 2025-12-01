@@ -34,7 +34,6 @@ const navLinks = [
   { key: 'pages.home.title', href: '/' },
   { key: 'nav.rooms', href: '/habitaciones' },
   { key: 'nav.about', href: '/quienes-somos' },
-  { key: 'nav.tourism', href: '/turismo' },
   { key: 'nav.contact', href: '/contacto' },
 ]
 

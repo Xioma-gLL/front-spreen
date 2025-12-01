@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { useI18n } from '../context/LanguageContext'
 import { useAuth } from '../context/AuthContext'
+import AuthModal from './AuthModal'
 
-// Small inline icon components (SVG) to avoid adding react-icons as a dependency
+// Small inline icon components (SVG)
 const IconUser = ({ className = 'w-5 h-5' }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
     <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v1h20v-1c0-3.33-6.67-5-10-5z" />
@@ -29,213 +30,315 @@ const IconUserPlus = ({ className = 'w-4 h-4' }) => (
     <path d="M15 14c2.7 0 8 1.34 8 4v1h-6v-1c0-1.03-1.91-2-4-2-2.09 0-4 .97-4 2v1H3v-1c0-2.66 5.3-4 8-4 1.73 0 3.15.51 4 1.2V14zm-3-9a3 3 0 100 6 3 3 0 000-6zm9 1h-2v2h-2v2h2v2h2v-2h2v-2h-2z" />
   </svg>
 )
+const IconPhone = ({ className = 'w-4 h-4' }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+  </svg>
+)
+const IconMail = ({ className = 'w-4 h-4' }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+  </svg>
+)
+const IconLocation = ({ className = 'w-4 h-4' }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+  </svg>
+)
 
 const navLinks = [
   { key: 'pages.home.title', href: '/' },
-  { key: 'nav.rooms', href: '/habitaciones' },
-  { key: 'nav.about', href: '/quienes-somos' },
-  { key: 'nav.contact', href: '/contacto' },
+  { key: 'nav.info', href: '/info' },
 ]
 
 export default function Header() {
   const [open, setOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const [authModalOpen, setAuthModalOpen] = useState(false)
+  const [authModalView, setAuthModalView] = useState('login')
   const { lang, setLang, t } = useI18n()
   const { user, isAuthenticated, logout } = useAuth()
 
+  const openAuthModal = (view = 'login') => {
+    setAuthModalView(view)
+    setAuthModalOpen(true)
+  }
+
   return (
     <>
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white backdrop-blur border-b" style={{ borderColor: '#E6E6E6' }}>
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2 cursor-pointer">
-            <img
-              src="https://plazatrujillo.com/wp-content/uploads/2025/09/cropped-logo-plaza-trujillo-192x192.webp"
-              alt="Plaza Trujillo Hotel"
-              className="h-10 w-10 rounded"
-            />
-            <span className="font-semibold text-[#591117]">Hotel Plaza Trujillo</span>
-          </Link>
-          
-          <nav className="hidden md:flex items-center gap-6">
-            {navLinks.map((l) => (
-                <NavLink
-                  key={l.key}
-                  to={l.href}
-                  className={({ isActive }) =>
-                  `group text-[#591117] hover:text-[#F26A4B] relative cursor-pointer ${isActive ? 'font-semibold' : ''}`
-                }
-              >
-                {t(l.key)}
-                <span className="absolute left-0 -bottom-1 h-[2px] w-full bg-[#F26A4B] scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100" />
-              </NavLink>
-            ))}
-            
-            {/* Selector de idioma */}
-            <div className="flex items-center gap-3">
-              {lang === 'en' ? (
-                  <button type="button" aria-label={t('nav.switch_to_es')} className="inline-flex items-center gap-2 text-[#591117] hover:text-[#F26A4B]" onClick={() => setLang('es')}>
-                  <span className="fi fi-es text-xl"></span>
-                  <span>{t('nav.spanish')}</span>
-                </button>
-              ) : (
-                  <button type="button" aria-label={t('nav.switch_to_en')} className="inline-flex items-center gap-2 text-[#591117] hover:text-[#F26A4B]" onClick={() => setLang('en')}>
-                  <span className="fi fi-us text-xl"></span>
-                  <span>{t('nav.english')}</span>
-                </button>
-              )}
+      {/* ===== BARRA SUPERIOR DE INFORMACIÓN ===== */}
+      <div className="bg-[#f8f8f8] border-b border-gray-200 text-sm hidden md:block">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-10">
+            {/* Izquierda: Mensaje */}
+            <div className="flex items-center text-gray-600">
+              <span className="font-medium text-[#591117]">Página web oficial</span>
+              <span className="mx-2">·</span>
+              <span className="text-[#6B8E23]">Mejor precio garantizado</span>
             </div>
 
-            {/* Menú de usuario o botones de autenticación */}
-            <div className="relative">
-              <button
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center gap-2 text-gray-700 hover:text-gray-900 focus:outline-none p-2 rounded-full hover:bg-gray-100 transition-colors"
-              >
-                {isAuthenticated ? (
-                  user?.avatar ? (
-                    <img
-                      src={user.avatar}
-                      alt="Avatar"
-                      className="w-8 h-8 rounded-full object-cover"
-                    />
-                  ) : (
-                    <IconUserCircle className="w-8 h-8" />
-                  )
-                  ) : (
-                    <IconUser className="w-6 h-6" />
+            {/* Derecha: Contacto e idioma */}
+            <div className="flex items-center gap-6">
+              <a href="tel:+51992810971" className="flex items-center gap-1.5 text-gray-600 hover:text-[#591117] transition-colors">
+                <IconPhone className="w-4 h-4" />
+                <span>+51 992810971</span>
+              </a>
+              <a href="mailto:reservas@plazatrujillo.com" className="flex items-center gap-1.5 text-gray-600 hover:text-[#591117] transition-colors">
+                <IconMail className="w-4 h-4" />
+                <span>reservas@plazatrujillo.com</span>
+              </a>
+              <div className="flex items-center gap-1 text-gray-600">
+                <span>S/.</span>
+                <span>Peruvian Nuevo Sol</span>
+              </div>
+              
+              {/* Selector de idioma */}
+              <div className="flex items-center border-l border-gray-300 pl-4">
+                {lang === 'en' ? (
+                  <button 
+                    type="button" 
+                    onClick={() => setLang('es')} 
+                    className="flex items-center gap-2 text-gray-600 hover:text-[#591117] transition-colors"
+                  >
+                    <span className="fi fi-es text-lg"></span>
+                    <span>Español</span>
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                ) : (
+                  <button 
+                    type="button" 
+                    onClick={() => setLang('en')} 
+                    className="flex items-center gap-2 text-gray-600 hover:text-[#591117] transition-colors"
+                  >
+                    <span className="fi fi-us text-lg"></span>
+                    <span>English</span>
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </button>
                 )}
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-              </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-              {userMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
-                  {isAuthenticated ? (
-                    <>
+      {/* ===== HEADER PRINCIPAL ===== */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo y dirección */}
+            <div className="flex items-center gap-4">
+              <Link to="/" className="flex items-center gap-3 cursor-pointer">
+                <img
+                  src="https://plazatrujillo.com/wp-content/uploads/2025/09/cropped-logo-plaza-trujillo-192x192.webp"
+                  alt="Plaza Trujillo Hotel"
+                  className="h-12 w-12 rounded-full border-2 border-gray-100"
+                />
+                <div className="hidden sm:flex items-center gap-2">
+                  <span className="font-semibold text-[#591117]">Hotel Plaza Trujillo</span>
+                  <span className="text-yellow-500 text-sm">★★★</span>
+                  <span className="text-gray-300">|</span>
+                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <IconLocation className="w-3 h-3" />
+                    <span>Jr. Bolognesi 344 – Centro – Trujillo</span>
+                  </div>
+                </div>
+              </Link>
+            </div>
+
+            {/* Navegación Desktop y Botón de autenticación */}
+            <div className="hidden md:flex items-center gap-6">
+              {/* Links de navegación */}
+              <nav className="flex items-center gap-6">
+                {navLinks.map((l) => (
+                  <NavLink
+                    key={l.key}
+                    to={l.href}
+                    className={({ isActive }) =>
+                      `text-gray-700 hover:text-[#591117] font-medium transition-colors ${isActive ? 'text-[#591117]' : ''}`
+                    }
+                  >
+                    {t(l.key)}
+                  </NavLink>
+                ))}
+              </nav>
+
+              {/* Botón de autenticación */}
+              {isAuthenticated ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                    className="flex items-center gap-2 text-gray-700 hover:text-gray-900 focus:outline-none"
+                  >
+                    {user?.avatar ? (
+                      <img src={user.avatar} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />
+                    ) : (
+                      <IconUserCircle className="w-8 h-8 text-gray-500" />
+                    )}
+                    <span className="font-medium">{user?.firstName}</span>
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+
+                  {userMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                       <div className="px-4 py-2 text-sm text-gray-600 border-b border-gray-200">
                         <div className="font-medium">{user?.firstName} {user?.lastName}</div>
-                        <div className="text-xs">{user?.email}</div>
+                        <div className="text-xs truncate">{user?.email}</div>
                       </div>
                       <Link
                         to="/perfil"
-                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         onClick={() => setUserMenuOpen(false)}
                       >
                         <IconUser className="mr-3 w-4 h-4" />
                         Mi perfil
                       </Link>
                       <button
-                        onClick={() => {
-                          logout()
-                          setUserMenuOpen(false)
-                        }}
+                        onClick={() => { logout(); setUserMenuOpen(false) }}
                         className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
                       >
                         <IconSignOut className="mr-3 w-4 h-4" />
                         Cerrar sesión
                       </button>
-                    </>
-                  ) : (
-                    <>
-                      <Link
-                        to="/login"
-                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => setUserMenuOpen(false)}
-                      >
-                        <IconSignIn className="mr-3 w-4 h-4" />
-                        Iniciar sesión
-                      </Link>
-                      <Link
-                        to="/registro"
-                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => setUserMenuOpen(false)}
-                      >
-                        <IconUserPlus className="mr-3 w-4 h-4" />
-                        Registrarse
-                      </Link>
-                    </>
+                    </div>
                   )}
                 </div>
-              )}
-            </div>
-          </nav>
-          
-          <button
-            type="button"
-            className="md:hidden inline-flex items-center justify-center p-2 rounded border text-[#591117]"
-            style={{ borderColor: '#8C0808' }}
-            onClick={() => setOpen((v) => !v)}
-          >
-            <span className="sr-only">{t('nav.open_menu')}</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
-              <path d="M3.75 6.75h16.5v1.5H3.75zM3.75 11.25h16.5v1.5H3.75zM3.75 15.75h16.5v1.5H3.75z" />
-            </svg>
-          </button>
-        </div>
-      </div>
-      
-      {open && (
-        <div className="md:hidden border-t" style={{ borderColor: '#8C0808' }}>
-          <div className="max-w-6xl mx-auto px-4 py-3 space-y-2">
-            {navLinks.map((l) => (
-              <NavLink key={l.key} to={l.href} className="block text-[#591117] cursor-pointer" onClick={() => setOpen(false)}>
-                {t(l.key)}
-              </NavLink>
-            ))}
-            
-            {/* Selector de idioma móvil */}
-            <div className="flex items-center gap-3 pt-2 border-t border-gray-200">
-              {lang === 'en' ? (
-                <button type="button" aria-label={t('nav.switch_to_es')} className="inline-flex items-center gap-2 text-[#F2F2F2] bg-[#591117] hover:bg-[#8C0808] px-2 py-1 rounded" onClick={() => { setLang('es'); setOpen(false) }}>
-                  <span className="fi fi-es text-xl"></span>
-                  <span>{t('nav.spanish')}</span>
-                </button>
               ) : (
-                <button type="button" aria-label={t('nav.switch_to_en')} className="inline-flex items-center gap-2 text-[#F2F2F2] bg-[#591117] hover:bg-[#8C0808] px-2 py-1 rounded" onClick={() => { setLang('en'); setOpen(false) }}>
-                  <span className="fi fi-us text-xl"></span>
-                  <span>{t('nav.english')}</span>
+                <button
+                  onClick={() => openAuthModal('login')}
+                  className="bg-[#591117] hover:bg-[#7a171f] text-white px-6 py-2.5 rounded-full font-medium transition-colors"
+                >
+                  Iniciar sesión
                 </button>
               )}
             </div>
 
-            {/* Autenticación móvil con ícono de usuario */}
-            <div className="pt-2 border-t border-gray-200">
-              {isAuthenticated ? (
-                <>
-                  <div className="px-4 py-2 text-sm text-gray-600 border-b border-gray-200">
-                    <div className="font-medium">{user?.firstName} {user?.lastName}</div>
-                    <div className="text-xs">{user?.email}</div>
-                  </div>
-                  <Link to="/perfil" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" onClick={() => setOpen(false)}>
-                    <IconUser className="mr-3 w-4 h-4" />
-                    Mi perfil
-                  </Link>
-                  <button onClick={logout} className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                    <IconSignOut className="mr-3 w-4 h-4" />
-                    Cerrar sesión
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link to="/login" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" onClick={() => setOpen(false)}>
-                    <IconSignIn className="mr-3 w-4 h-4" />
-                    Iniciar sesión
-                  </Link>
-                  <Link to="/registro" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" onClick={() => setOpen(false)}>
-                    <IconUserPlus className="mr-3 w-4 h-4" />
-                    Registrarse
-                  </Link>
-                </>
-              )}
-            </div>
+            {/* Botón hamburguesa móvil */}
+            <button
+              type="button"
+              className="md:hidden inline-flex items-center justify-center p-2 rounded text-[#591117] hover:bg-gray-100"
+              onClick={() => setOpen((v) => !v)}
+            >
+              <span className="sr-only">{t('nav.open_menu')}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
+                <path d="M3.75 6.75h16.5v1.5H3.75zM3.75 11.25h16.5v1.5H3.75zM3.75 15.75h16.5v1.5H3.75z" />
+              </svg>
+            </button>
           </div>
         </div>
-      )}
-    </header>
-    {/* Spacer to prevent content overlap with fixed header */}
-    <div aria-hidden className="h-16"></div>
+
+        {/* Menú móvil */}
+        {open && (
+          <div className="md:hidden border-t border-gray-200 bg-white">
+            <div className="px-4 py-4 space-y-3">
+              {navLinks.map((l) => (
+                <NavLink 
+                  key={l.key} 
+                  to={l.href} 
+                  className={({ isActive }) =>
+                    `block py-2 text-gray-700 hover:text-[#591117] ${isActive ? 'text-[#591117] font-medium' : ''}`
+                  }
+                  onClick={() => setOpen(false)}
+                >
+                  {t(l.key)}
+                </NavLink>
+              ))}
+
+              {/* Información de contacto móvil */}
+              <div className="pt-3 border-t border-gray-200 space-y-2">
+                <a href="tel:+51992810971" className="flex items-center gap-2 text-sm text-gray-600">
+                  <IconPhone className="w-4 h-4" />
+                  <span>+51 992810971</span>
+                </a>
+                <a href="mailto:reservas@plazatrujillo.com" className="flex items-center gap-2 text-sm text-gray-600">
+                  <IconMail className="w-4 h-4" />
+                  <span>reservas@plazatrujillo.com</span>
+                </a>
+              </div>
+
+              {/* Selector de idioma móvil */}
+              <div className="pt-3 border-t border-gray-200">
+                {lang === 'en' ? (
+                  <button 
+                    type="button" 
+                    onClick={() => { setLang('es'); setOpen(false) }} 
+                    className="flex items-center gap-2 text-gray-600"
+                  >
+                    <span className="fi fi-es text-lg"></span>
+                    <span>Cambiar a Español</span>
+                  </button>
+                ) : (
+                  <button 
+                    type="button" 
+                    onClick={() => { setLang('en'); setOpen(false) }} 
+                    className="flex items-center gap-2 text-gray-600"
+                  >
+                    <span className="fi fi-us text-lg"></span>
+                    <span>Switch to English</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Autenticación móvil */}
+              <div className="pt-3 border-t border-gray-200">
+                {isAuthenticated ? (
+                  <>
+                    <div className="py-2 text-sm text-gray-600">
+                      <div className="font-medium">{user?.firstName} {user?.lastName}</div>
+                      <div className="text-xs">{user?.email}</div>
+                    </div>
+                    <Link 
+                      to="/perfil" 
+                      className="flex items-center py-2 text-gray-700 hover:text-[#591117]" 
+                      onClick={() => setOpen(false)}
+                    >
+                      <IconUser className="mr-3 w-4 h-4" />
+                      Mi perfil
+                    </Link>
+                    <button 
+                      onClick={() => { logout(); setOpen(false) }} 
+                      className="flex items-center py-2 text-red-600"
+                    >
+                      <IconSignOut className="mr-3 w-4 h-4" />
+                      Cerrar sesión
+                    </button>
+                  </>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    <button
+                      onClick={() => { setOpen(false); openAuthModal('login') }}
+                      className="bg-[#591117] hover:bg-[#7a171f] text-white px-4 py-2.5 rounded-full font-medium text-center transition-colors"
+                    >
+                      Iniciar sesión
+                    </button>
+                    <button
+                      onClick={() => { setOpen(false); openAuthModal('register') }}
+                      className="border border-[#591117] text-[#591117] hover:bg-[#591117] hover:text-white px-4 py-2.5 rounded-full font-medium text-center transition-colors"
+                    >
+                      Registrarse
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* Modal de autenticación */}
+      <AuthModal 
+        isOpen={authModalOpen} 
+        onClose={() => setAuthModalOpen(false)}
+        initialView={authModalView}
+      />
+
+      {/* Spacer para contenido */}
+      <div aria-hidden className="h-0 md:h-0"></div>
     </>
   )
 }

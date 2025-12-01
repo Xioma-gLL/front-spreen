@@ -1,38 +1,9 @@
 import { useState } from 'react'
 import { useI18n } from '../context/LanguageContext'
 import { Link, useNavigate } from 'react-router-dom'
-// Inline SVG icons to replace react-icons dependency
-const IconGoogle = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path fill="#EA4335" d="M12 11.5v2.9h3.7c-.16 1.06-.98 2.99-3.7 4.08C8.88 20.2 5 16.44 5 12c0-4.44 3.88-8.2 8.05-6.47 1.81.78 2.98 2.5 3.3 3.87H12z"/>
-    <path fill="#4285F4" d="M21 12.24c0-.7-.06-1.16-.2-1.67H12v3.17h4.9c-.2 1.06-1.28 3.12-4.1 4.03-1.91.67-4.93-.31-6.44-1.65l-1.44 1.1C6.67 20.06 9.82 22 12.99 22c4.35 0 7.96-2.77 8.97-6.8 0-.03.01-.06.01-.96z"/>
-    <path fill="#FBBC05" d="M7.54 14.39c-.41-1.24-.41-2.59 0-3.83l-1.44-1.1C4.02 9.29 3 11.3 3 12c0 .7.6 2.15 2.1 3.54l2.44-1.15z"/>
-    <path fill="#34A853" d="M12 5.5c1.59 0 2.83.55 3.68 1.02l2.26-2.26C16.95 2.44 14.3 1 12 1 9.9 1 7.98 1.97 6.56 3.2l2.44 1.15C8.99 4.27 10.39 5.5 12 5.5z"/>
-  </svg>
-)
-const IconFacebook = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.99 3.66 9.12 8.44 9.88v-6.99H8.9v-2.89h1.53V9.41c0-1.51.9-2.34 2.27-2.34.66 0 1.35.12 1.35.12v1.49h-.77c-.76 0-1 .48-1 0v1.25h1.72l-.28 2.89h-1.44v6.99C18.34 21.12 22 16.99 22 12z"/>
-  </svg>
-)
-const IconTwitter = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path d="M22.46 6c-.77.35-1.6.58-2.46.69a4.27 4.27 0 001.88-2.36 8.58 8.58 0 01-2.72 1.04 4.26 4.26 0 00-7.26 3.88 12.1 12.1 0 01-8.8-4.46 4.26 4.26 0 001.32 5.69c-.66 0-1.28-.2-1.82-.5 0 2.02 1.4 3.72 3.3 4.11a4.27 4.27 0 01-1.92.07 4.26 4.26 0 003.98 2.96A8.55 8.55 0 012 19.54a12.06 12.06 0 006.54 1.92c7.85 0 12.14-6.5 12.14-12.13 0-.18-.02-.35-.03-.53A8.64 8.64 0 0024 6.59a8.43 8.43 0 01-2.54.7z"/>
-  </svg>
-)
-const IconEye = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
-    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
-    <circle cx="12" cy="12" r="3" />
-  </svg>
-)
-const IconEyeSlash = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
-    <path d="M17.94 17.94A10.95 10.95 0 0112 20c-7 0-11-8-11-8a21.69 21.69 0 014.25-5.77" />
-    <path d="M1 1l22 22" />
-    <path d="M9.53 9.53a3.5 3.5 0 004.94 4.94" />
-  </svg>
-)
+import { FcGoogle } from 'react-icons/fc'
+import { FaFacebook } from 'react-icons/fa'
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import { useAuth } from '../context/AuthContext'
 
 export default function LoginPage() {
@@ -136,9 +107,9 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer"
                 >
-                  {showPassword ? <IconEyeSlash size={18} className="w-4 h-4" /> : <IconEye size={18} className="w-4 h-4" />}
+                  {showPassword ? <AiOutlineEyeInvisible size={18} /> : <AiOutlineEye size={18} />}
                 </button>
               </div>
             </div>
@@ -152,9 +123,9 @@ export default function LoginPage() {
                   type="checkbox"
                   checked={formData.rememberMe}
                   onChange={handleInputChange}
-                  className="h-4 w-4 text-[#F21905] focus:ring-[#F26A4B] border-gray-300 rounded"
+                  className="h-4 w-4 text-[#F21905] focus:ring-[#F26A4B] border-gray-300 rounded cursor-pointer"
                 />
-                <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-700">
+                <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-700 cursor-pointer">
                   Recuérdame
                 </label>
               </div>
@@ -170,7 +141,7 @@ export default function LoginPage() {
               <button
               type="submit"
               disabled={isLoading}
-                className="w-full bg-gradient-to-r from-[#591117] to-[#F26A4B] text-white py-3 px-4 rounded-lg font-medium hover:from-[#F21905] hover:to-[#8C0808] focus:outline-none focus:ring-2 focus:ring-[#F26A4B] focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-[#591117] to-[#F26A4B] text-white py-3 px-4 rounded-lg font-medium hover:from-[#F21905] hover:to-[#8C0808] focus:outline-none focus:ring-2 focus:ring-[#F26A4B] focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">
@@ -194,24 +165,18 @@ export default function LoginPage() {
           </div>
 
           {/* Botones de login social */}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3">
               <button
               onClick={() => handleSocialLogin('google')}
-              className="flex items-center justify-center py-3 px-4 border border-gray-300 rounded-lg hover:bg-[#FFF7F7] transition-colors duration-200"
+              className="flex items-center justify-center py-3 px-4 border border-gray-300 rounded-lg hover:bg-[#FFF7F7] transition-colors duration-200 cursor-pointer"
             >
-              <IconGoogle className="w-5 h-5" />
+              <FcGoogle className="w-5 h-5" />
             </button>
             <button
               onClick={() => handleSocialLogin('facebook')}
-              className="flex items-center justify-center py-3 px-4 border border-gray-300 rounded-lg hover:bg-[#FFF7F7] transition-colors duration-200"
+              className="flex items-center justify-center py-3 px-4 border border-gray-300 rounded-lg hover:bg-[#FFF7F7] transition-colors duration-200 cursor-pointer"
             >
-              <IconFacebook className="text-blue-600 w-5 h-5" />
-            </button>
-            <button
-              onClick={() => handleSocialLogin('twitter')}
-              className="flex items-center justify-center py-3 px-4 border border-gray-300 rounded-lg hover:bg-[#FFF7F7] transition-colors duration-200"
-            >
-              <IconTwitter className="text-blue-400 w-5 h-5" />
+              <FaFacebook className="text-blue-600 w-5 h-5" />
             </button>
           </div>
         </div>

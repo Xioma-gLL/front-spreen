@@ -10,7 +10,6 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import UserProfile from './pages/UserProfile'
 import TourismPage from './pages/TourismPage'
 import ContactPage from './pages/ContactPage'
-import ChatWidget from './components/ChatWidget'
 import Toast from './components/Toast'
 
 export default function App() {
@@ -30,7 +29,6 @@ export default function App() {
             <Route path="/perfil" element={<UserProfile />} />
           </Routes>
         </BrowserRouter>
-        <ChatWidget />
         <Toast />
       </AuthProvider>
     </LanguageProvider>

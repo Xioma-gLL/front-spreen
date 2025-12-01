@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import Header from '../components/Header'
 import { useAuth } from '../context/AuthContext'
+import roomsData from '../data/rooms'
 
 // small inline svg icons
 const IconCamera = ({ className = 'w-3.5 h-3.5' }) => (
@@ -25,6 +27,7 @@ export default function UserProfile() {
     phone: user?.phone || '',
     bio: user?.bio || ''
   })
+  const [reservations, setReservations] = useState([])
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -51,12 +54,45 @@ export default function UserProfile() {
     setIsEditing(false)
   }
 
+  useEffect(() => {
+    // load reservations from localStorage and ensure each has an id
+    try {
+      const raw = JSON.parse(localStorage.getItem('plaza_reservations') || '[]')
+      const normalized = raw.map((r, i) => ({ ...r, id: r.id || `${r.room}-${r.checkIn}-${r.checkOut}-${i}` }))
+      setReservations(normalized)
+      // store normalized list back so we have stable ids
+      localStorage.setItem('plaza_reservations', JSON.stringify(normalized))
+    } catch (err) {
+      setReservations([])
+    }
+  }, [])
+
+  useEffect(() => {
+    document.title = `Perfil - Hotel Plaza Trujillo`
+  }, [])
+
+  useEffect(() => {
+    // expose count to stats area if needed or other side-effects
+  }, [reservations])
+
+  const handleCancelReservation = (id) => {
+    if (!confirm('¿Desea cancelar esta reserva?')) return
+    const filtered = reservations.filter((r) => r.id !== id)
+    setReservations(filtered)
+    localStorage.setItem('plaza_reservations', JSON.stringify(filtered))
+  }
+
+  const formatDate = (d) => {
+    try { return new Date(d).toLocaleDateString() } catch { return d }
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-[#FFF5F5] py-12 px-4">
+      <Header />
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 h-32"></div>
+          <div className="h-32" style={{ background: 'linear-gradient(90deg, var(--color-maroon) 0%, var(--color-salmon) 100%)' }}></div>
           <div className="relative px-8 pb-8">
             <div className="flex items-end -mt-16">
               <div className="relative">
@@ -65,7 +101,7 @@ export default function UserProfile() {
                   alt="Avatar"
                   className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover"
                 />
-                <button className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors">
+                <button className="absolute bottom-0 right-0 p-2 rounded-full text-white" style={{ background: 'var(--color-maroon)' }}>
                   <IconCamera />
                 </button>
               </div>
@@ -75,11 +111,13 @@ export default function UserProfile() {
                 </h1>
                 <p className="text-gray-600">{user?.email}</p>
               </div>
-            </div>
+
+              
+              </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Información personal */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl shadow-lg p-6">
@@ -90,7 +128,8 @@ export default function UserProfile() {
                 {!isEditing && (
                     <button
                     onClick={() => setIsEditing(true)}
-                    className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    className="flex items-center px-4 py-2 text-white rounded-lg"
+                    style={{ background: 'linear-gradient(90deg, var(--color-maroon) 0%, var(--color-salmon) 100%)' }}
                   >
                       <IconEdit className="mr-2" />
                     Editar
@@ -110,7 +149,7 @@ export default function UserProfile() {
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F26A4B] focus:border-transparent"
                       />
                     </div>
                     <div>
@@ -122,7 +161,7 @@ export default function UserProfile() {
                         name="lastName"
                         value={formData.lastName}
                         onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F26A4B] focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -135,7 +174,7 @@ export default function UserProfile() {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F26A4B] focus:border-transparent"
                     />
                   </div>
                   <div>
@@ -147,7 +186,7 @@ export default function UserProfile() {
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F26A4B] focus:border-transparent"
                     />
                   </div>
                   <div>
@@ -159,14 +198,15 @@ export default function UserProfile() {
                       value={formData.bio}
                       onChange={handleInputChange}
                       rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F26A4B] focus:border-transparent"
                       placeholder="Cuéntanos un poco sobre ti..."
                     />
                   </div>
                   <div className="flex space-x-3">
                       <button
                       type="submit"
-                      className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                      className="flex items-center px-4 py-2 text-white rounded-lg"
+                      style={{ background: 'var(--color-maroon)' }}
                     >
                       <IconSave className="mr-2" />
                       Guardar
@@ -174,7 +214,8 @@ export default function UserProfile() {
                       <button
                       type="button"
                       onClick={handleCancel}
-                      className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                      className="flex items-center px-4 py-2 text-white rounded-lg"
+                      style={{ background: 'var(--color-deep)' }}
                       >
                       <IconTimes className="mr-2" />
                       Cancelar
@@ -202,6 +243,45 @@ export default function UserProfile() {
                 </div>
               )}
             </div>
+
+            {/* Historial de Reservas (se muestra debajo de Información personal) */}
+            <div className="mt-6">
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">Historial de Reservas</h3>
+                  <div className="text-sm text-gray-500">{reservations.length} reserva(s)</div>
+                </div>
+                {reservations.length === 0 ? (
+                  <div className="text-sm text-gray-600">No tienes reservas registradas.</div>
+                ) : (
+                  <div className="space-y-3">
+                    {reservations.map((r) => {
+                      const room = roomsData.find((x) => x.key === r.room) || {}
+                      const days = Math.max(1, Math.round((new Date(r.checkOut) - new Date(r.checkIn)) / (1000 * 60 * 60 * 24)))
+                      const total = (r.price || room.price || 0) * days
+                      return (
+                        <div key={r.id || `${r.room}-${r.checkIn}`} className="p-3 border rounded-lg flex items-center justify-between">
+                          <div className="flex items-start gap-4">
+                            <img src={room.img || 'https://source.unsplash.com/80x80/?hotel-room'} alt={room.title || r.room} className="w-20 h-16 object-cover rounded" />
+                            <div>
+                              <div className="font-medium text-gray-900">{room.title || r.room}</div>
+                              <div className="text-sm text-gray-500">{formatDate(r.checkIn)} — {formatDate(r.checkOut)} · {r.adults || 1} adulto(s){r.children ? ` · ${r.children} niño(s)` : ''}</div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="text-right">
+                              <div className="text-sm text-gray-500">Total</div>
+                              <div className="font-semibold text-gray-900">S/. {total}</div>
+                            </div>
+                            <button onClick={() => handleCancelReservation(r.id)} className="px-3 py-2 rounded bg-[#F26A4B] text-white">Cancelar</button>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Panel lateral */}
@@ -214,7 +294,7 @@ export default function UserProfile() {
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Reservas</span>
-                  <span className="font-semibold">12</span>
+                  <span className="font-semibold">{reservations.length}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Favoritos</span>
@@ -245,6 +325,7 @@ export default function UserProfile() {
                 <button
                   onClick={logout}
                   className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  style={{ borderColor: 'var(--color-deep)' }}
                 >
                   Cerrar sesión
                 </button>
@@ -252,6 +333,7 @@ export default function UserProfile() {
             </div>
           </div>
         </div>
+        
       </div>
     </div>
   )

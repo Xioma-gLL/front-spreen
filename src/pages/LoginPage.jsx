@@ -1,9 +1,35 @@
 import { useState } from 'react'
 import { useI18n } from '../context/LanguageContext'
 import { Link, useNavigate } from 'react-router-dom'
-import { FcGoogle } from 'react-icons/fc'
-import { FaFacebook } from 'react-icons/fa'
-import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
+// Inline SVG icon components instead of react-icons to avoid dependency issues
+const GoogleIcon = ({ className }) => (
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24" height="24">
+    <path fill="#fbc02d" d="M43.6 20.5H42V20H24v8h11.3C33.5 32.9 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.2l5.7-5.7C34.9 6.1 29.8 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c10.9 0 19.2-7.9 19.2-19 0-1.3-.1-2.6-.6-3.5z"/>
+    <path fill="#e53935" d="M6.3 14.7l6.6 4.8C14.1 16 18.8 12 24 12c3.1 0 5.9 1.2 8 3.2l5.7-5.7C34.9 6.1 29.8 4 24 4 16 4 8.9 8.2 6.3 14.7z"/>
+    <path fill="#4caf50" d="M24 44c6.2 0 11.7-2.4 15.9-6.4l-7.4-6.2C29.9 33.6 27.1 34.8 24 34.8c-5.2 0-9.5-3.1-11.3-7.4l-6.8 5.2C8.1 39 15.3 44 24 44z"/>
+    <path fill="#1565c0" d="M43.6 20.5H42V20H24v8h11.3c-1 2.6-3.6 5.4-7.3 7.2 0 0 0 0 0 0l7.4 6.2C40.8 39.8 48 33.3 48 24 48 22 47.8 21 47.6 20h-4z"/>
+  </svg>
+)
+
+const FacebookIcon = ({ className }) => (
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+    <path fill="#1877f2" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.094 4.388 23 10.125 24v-8.485H7.078v-3.442h3.047V9.41c0-3.007 1.792-4.666 4.533-4.666 1.312 0 2.686.235 2.686.235v2.953h-1.513c-1.494 0-1.953.925-1.953 1.874v2.25h3.328l-.532 3.442h-2.796L14.875 24C20.612 23 24 18.094 24 12.073z"/>
+  </svg>
+)
+
+const EyeIcon = ({ className }) => (
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+    <circle cx="12" cy="12" r="3" strokeWidth="2" />
+  </svg>
+)
+
+const EyeOffIcon = ({ className }) => (
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3l18 18M10.47 10.47A3 3 0 0113.53 13.53" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.88 5.66A9.96 9.96 0 0121 12c-1.274 4.057-5.065 7-9.542 7a9.96 9.96 0 01-8.58-4.64" />
+  </svg>
+)
 import { useAuth } from '../context/AuthContext'
 
 export default function LoginPage() {
@@ -109,7 +135,7 @@ export default function LoginPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer"
                 >
-                  {showPassword ? <AiOutlineEyeInvisible size={18} /> : <AiOutlineEye size={18} />}
+                  {showPassword ? <EyeOffIcon className="text-gray-400" /> : <EyeIcon className="text-gray-400" />}
                 </button>
               </div>
             </div>
@@ -170,13 +196,13 @@ export default function LoginPage() {
               onClick={() => handleSocialLogin('google')}
               className="flex items-center justify-center py-3 px-4 border border-gray-300 rounded-lg hover:bg-[#FFF7F7] transition-colors duration-200 cursor-pointer"
             >
-              <FcGoogle className="w-5 h-5" />
+              <GoogleIcon className="w-5 h-5" />
             </button>
             <button
               onClick={() => handleSocialLogin('facebook')}
               className="flex items-center justify-center py-3 px-4 border border-gray-300 rounded-lg hover:bg-[#FFF7F7] transition-colors duration-200 cursor-pointer"
             >
-              <FaFacebook className="text-blue-600 w-5 h-5" />
+              <FacebookIcon className="text-blue-600 w-5 h-5" />
             </button>
           </div>
         </div>

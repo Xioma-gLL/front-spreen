@@ -44,7 +44,8 @@ export default function Header() {
   const { user, isAuthenticated, logout } = useAuth()
 
   return (
-    <header className="sticky top-0 z-50 bg-white backdrop-blur border-b" style={{ borderColor: '#E6E6E6' }}>
+    <>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white backdrop-blur border-b" style={{ borderColor: '#E6E6E6' }}>
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2 cursor-pointer">
@@ -233,5 +234,8 @@ export default function Header() {
         </div>
       )}
     </header>
+    {/* Spacer to prevent content overlap with fixed header */}
+    <div aria-hidden className="h-16"></div>
+    </>
   )
 }

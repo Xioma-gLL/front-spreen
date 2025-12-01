@@ -2,18 +2,24 @@ import { createContext, useContext, useState, useEffect } from 'react'
 
 const AuthContext = createContext()
 
+// URL del API de Spring Boot
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api'
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [token, setToken] = useState(null)
 
-  // Simular carga de usuario desde localStorage
+  // Cargar usuario y token desde localStorage al iniciar
   useEffect(() => {
     const loadUser = () => {
       const storedUser = localStorage.getItem('user')
-      if (storedUser) {
+      const storedToken = localStorage.getItem('token')
+      if (storedUser && storedToken) {
         const userData = JSON.parse(storedUser)
         setUser(userData)
+        setToken(storedToken)
         setIsAuthenticated(true)
       }
       setIsLoading(false)
@@ -22,53 +28,107 @@ export function AuthProvider({ children }) {
     loadUser()
   }, [])
 
-  const login = async (userData) => {
+  const login = async (credentials) => {
     setIsLoading(true)
-    // Return a promise so callers can await completion
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log('AuthContext.login called with', userData)
-        const user = {
-          id: '1',
-          email: userData.email,
-          firstName: 'Juan',
-          lastName: 'Pérez',
-          avatar: 'https://images.unsplash.com/photo-1472099645785-5658ab4ff4e?w=150&h=150&fit=crop&crop=face'
+    try {
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: credentials.email,
+          password: credentials.password,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        const userData = {
+          email: data.email,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          phone: data.phone,
+          phonePrefix: data.phonePrefix,
         }
-        setUser(user)
+        setUser(userData)
+        setToken(data.token)
         setIsAuthenticated(true)
-        localStorage.setItem('user', JSON.stringify(user))
+        localStorage.setItem('user', JSON.stringify(userData))
+        localStorage.setItem('token', data.token)
         setIsLoading(false)
-        resolve(user)
-      }, 1000)
-    })
+        return { success: true, user: userData }
+      } else {
+        setIsLoading(false)
+        return { success: false, message: data.message || 'Error al iniciar sesión' }
+      }
+    } catch (error) {
+      console.error('Error en login:', error)
+      setIsLoading(false)
+      return { success: false, message: 'Error de conexión con el servidor' }
+    }
   }
 
   const register = async (userData) => {
     setIsLoading(true)
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log('AuthContext.register called with', userData)
-        const user = {
-          id: Date.now().toString(),
-          email: userData.email,
+    try {
+      const response = await fetch(`${API_URL}/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           firstName: userData.firstName,
           lastName: userData.lastName,
-          avatar: 'https://images.unsplash.com/photo-1472099645785-5658ab4ff4e?w=150&h=150&fit=crop&crop=face'
+          email: userData.email,
+          password: userData.password,
+          phonePrefix: userData.phonePrefix,
+          phone: userData.phone,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        const user = {
+          email: data.email,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          phone: data.phone,
+          phonePrefix: data.phonePrefix,
         }
         setUser(user)
+        setToken(data.token)
         setIsAuthenticated(true)
         localStorage.setItem('user', JSON.stringify(user))
+        localStorage.setItem('token', data.token)
         setIsLoading(false)
-        resolve(user)
-      }, 1500)
-    })
+        return { success: true, user }
+      } else {
+        setIsLoading(false)
+        return { success: false, message: data.message || 'Error al registrarse' }
+      }
+    } catch (error) {
+      console.error('Error en register:', error)
+      setIsLoading(false)
+      return { success: false, message: 'Error de conexión con el servidor' }
+    }
   }
 
   const logout = () => {
     setUser(null)
+    setToken(null)
     setIsAuthenticated(false)
     localStorage.removeItem('user')
+    localStorage.removeItem('token')
+  }
+
+  // Para OAuth - establecer usuario desde callback
+  const setOAuthUser = (userData, authToken) => {
+    setUser(userData)
+    setToken(authToken)
+    setIsAuthenticated(true)
   }
 
   const updateProfile = (userData) => {
@@ -77,14 +137,34 @@ export function AuthProvider({ children }) {
     localStorage.setItem('user', JSON.stringify(updatedUser))
   }
 
+  // Función helper para hacer peticiones autenticadas
+  const authFetch = async (url, options = {}) => {
+    const headers = {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    }
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`
+    }
+
+    return fetch(url, {
+      ...options,
+      headers,
+    })
+  }
+
   const value = {
     user,
+    token,
     isLoading,
     isAuthenticated,
     login,
     register,
     logout,
-    updateProfile
+    updateProfile,
+    authFetch,
+    setOAuthUser,
   }
 
   return (

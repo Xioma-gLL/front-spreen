@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api'
+
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -10,12 +12,35 @@ export default function ForgotPasswordPage() {
     e.preventDefault()
     setIsLoading(true)
     
-    // Simular envío de correo de recuperación
-    setTimeout(() => {
+    try {
+      const response = await fetch(`${API_URL}/auth/forgot-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setIsSubmitted(true)
+        window.dispatchEvent(new CustomEvent('toast', { 
+          detail: { type: 'success', message: 'Revisa tu correo electrónico', duration: 4000 } 
+        }))
+      } else {
+        window.dispatchEvent(new CustomEvent('toast', { 
+          detail: { type: 'error', message: data.message || 'Error al enviar correo', duration: 4000 } 
+        }))
+      }
+    } catch (error) {
+      console.error('Error:', error)
+      window.dispatchEvent(new CustomEvent('toast', { 
+        detail: { type: 'error', message: 'Error de conexión con el servidor', duration: 4000 } 
+      }))
+    } finally {
       setIsLoading(false)
-      setIsSubmitted(true)
-      console.log('Password reset email sent to:', email)
-    }, 2000)
+    }
   }
 
   if (isSubmitted) {

@@ -93,16 +93,20 @@ export default function RegisterPage() {
     console.log('RegisterPage.handleSubmit called with', formData)
     
     if (formData.password !== formData.confirmPassword) {
-      alert('Las contraseñas no coinciden')
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Las contraseñas no coinciden', duration: 4000 } }))
       return
     }
     
     setIsLoading(true)
     
     try {
-      await register(formData)
-      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', message: 'Registro realizado con éxito', duration: 3500 } }))
-      navigate('/')
+      const result = await register(formData)
+      if (result.success) {
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', message: 'Registro realizado con éxito', duration: 3500 } }))
+        navigate('/')
+      } else {
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: result.message || 'Error en el registro', duration: 4000 } }))
+      }
     } catch (error) {
       console.error('Registration error:', error)
       window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error en el registro', duration: 4000 } }))
@@ -112,7 +116,8 @@ export default function RegisterPage() {
   }
 
   const handleSocialRegister = (provider) => {
-    console.log(`Register with ${provider}`)
+    // Redirigir al backend para OAuth (igual que login)
+    window.location.href = `http://localhost:8080/oauth2/authorize/${provider}`
   }
 
   return (
@@ -342,21 +347,14 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {/* Botones de registro social */}
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              onClick={() => handleSocialRegister('google')}
-              className="flex items-center justify-center py-3 px-4 border border-gray-300 rounded-lg hover:bg-[#FFF7F7] transition-colors duration-200 cursor-pointer"
-            >
-              <GoogleIcon className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => handleSocialRegister('facebook')}
-              className="flex items-center justify-center py-3 px-4 border border-gray-300 rounded-lg hover:bg-[#FFF7F7] transition-colors duration-200 cursor-pointer"
-            >
-              <FacebookIcon className="text-blue-600 w-5 h-5" />
-            </button>
-          </div>
+          {/* Botón de registro con Google */}
+          <button
+            onClick={() => handleSocialRegister('google')}
+            className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-lg hover:bg-[#FFF7F7] transition-colors duration-200 cursor-pointer"
+          >
+            <GoogleIcon className="w-5 h-5" />
+            <span className="text-gray-600 font-medium">Google</span>
+          </button>
         </div>
 
         {/* Enlace a login */}

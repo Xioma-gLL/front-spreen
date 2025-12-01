@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useI18n } from '../context/LanguageContext'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 // Inline SVG icon components instead of react-icons to avoid dependency issues
 const GoogleIcon = ({ className }) => (
   <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24" height="24">
@@ -42,7 +42,11 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const { login } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const { t } = useI18n()
+
+  // Obtener la ruta desde donde vino el usuario (si fue redirigido desde una ruta protegida)
+  const from = location.state?.from?.pathname || '/'
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -58,10 +62,14 @@ export default function LoginPage() {
     setIsLoading(true)
     
     try {
-      await login(formData)
-      // show success toast
-      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', message: 'Inicio de sesión exitoso', duration: 3000 } }))
-      navigate('/')
+      const result = await login(formData)
+      if (result.success) {
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', message: 'Inicio de sesión exitoso', duration: 3000 } }))
+        // Redirigir a la página desde donde vino, o al inicio
+        navigate(from, { replace: true })
+      } else {
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: result.message || 'Error al iniciar sesión', duration: 4000 } }))
+      }
     } catch (error) {
       console.error('Login error:', error)
       window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error al iniciar sesión', duration: 4000 } }))
@@ -71,7 +79,8 @@ export default function LoginPage() {
   }
 
   const handleSocialLogin = (provider) => {
-    console.log(`Login with ${provider}`)
+    // Redirigir al backend para OAuth
+    window.location.href = `http://localhost:8080/oauth2/authorize/${provider}`
   }
 
   return (
@@ -190,21 +199,14 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Botones de login social */}
-          <div className="grid grid-cols-2 gap-3">
-              <button
-              onClick={() => handleSocialLogin('google')}
-              className="flex items-center justify-center py-3 px-4 border border-gray-300 rounded-lg hover:bg-[#FFF7F7] transition-colors duration-200 cursor-pointer"
-            >
-              <GoogleIcon className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => handleSocialLogin('facebook')}
-              className="flex items-center justify-center py-3 px-4 border border-gray-300 rounded-lg hover:bg-[#FFF7F7] transition-colors duration-200 cursor-pointer"
-            >
-              <FacebookIcon className="text-blue-600 w-5 h-5" />
-            </button>
-          </div>
+          {/* Botón de login con Google */}
+          <button
+            onClick={() => handleSocialLogin('google')}
+            className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-lg hover:bg-[#FFF7F7] transition-colors duration-200 cursor-pointer"
+          >
+            <GoogleIcon className="w-5 h-5" />
+            <span className="text-gray-600 font-medium">Google</span>
+          </button>
         </div>
 
         {/* Enlace a registro */}

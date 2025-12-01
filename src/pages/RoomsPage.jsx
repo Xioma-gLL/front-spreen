@@ -88,10 +88,22 @@ export default function RoomsPage() {
   
   // limit rooms to maximum 15 as this hotel has only 15 rooms
   const MAX_ROOMS = 15
-  const availableRoomsLimited = availableRooms.slice(0, MAX_ROOMS)
-  const filteredByCapacityLimited = filteredByCapacity.slice(0, MAX_ROOMS)
+  // Only include the room categories: single (simple), matrimonial, double and triple
+  const allowedTypes = ['single', 'matrimonial', 'double', 'triple']
+  const classifyRoom = (room) => {
+    const title = (room.title || '').toLowerCase()
+    if (title.includes('single') || title.includes('economy') || title.includes('simple')) return 'single'
+    if (title.includes('matrimonial')) return 'matrimonial'
+    if (title.includes('double')) return 'double'
+    if (title.includes('triple') || room.capacity === 3) return 'triple'
+    return null
+  }
+  const availableAndAllowed = availableRooms.filter(r => allowedTypes.includes(classifyRoom(r)))
+  const filteredByCapacityAllowed = filteredByCapacity.filter(r => allowedTypes.includes(classifyRoom(r)))
+  const availableRoomsLimited = availableAndAllowed.slice(0, MAX_ROOMS)
+  const filteredByCapacityLimited = filteredByCapacityAllowed.slice(0, MAX_ROOMS)
 
-  const totalFilteredCount = (checkIn && checkOut) ? availableRooms.length : filteredByCapacity.length
+  const totalFilteredCount = (checkIn && checkOut) ? availableAndAllowed.length : filteredByCapacityAllowed.length
   const displayedCount = Math.min(totalFilteredCount, MAX_ROOMS)
 
   return (

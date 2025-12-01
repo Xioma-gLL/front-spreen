@@ -17,6 +17,18 @@ export default function Rooms({ roomsOverride = null }) {
   const [openReservation, setOpenReservation] = useState(false)
   const [selected, setSelected] = useState(null)
   const rooms = roomsOverride || roomsData
+  // Only include the room categories: simple (single), matrimonial, triple, and double
+  const allowedTypes = ['single', 'matrimonial', 'double', 'triple']
+  const classifyRoom = (room) => {
+    const title = (room.title || '').toLowerCase()
+    if (title.includes('single') || title.includes('economy') || title.includes('simple')) return 'single'
+    if (title.includes('matrimonial')) return 'matrimonial'
+    if (title.includes('double')) return 'double'
+    // If title has 'triple' or capacity is 3, mark as triple
+    if (title.includes('triple') || room.capacity === 3) return 'triple'
+    return null
+  }
+  const filteredRooms = (rooms || []).filter(r => allowedTypes.includes(classifyRoom(r)))
   return (
     <section className="py-12">
       <div className="max-w-6xl mx-auto px-4">
@@ -32,13 +44,13 @@ export default function Rooms({ roomsOverride = null }) {
           </p>
         </div>
         
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {rooms.length === 0 && (
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-2">
+          {filteredRooms.length === 0 && (
             <div className="p-8 text-center text-gray-600 col-span-full">
               {lang === 'es' ? 'No hay habitaciones disponibles para las fechas seleccionadas.' : 'No rooms available for the selected dates.'}
             </div>
           )}
-          {rooms.length > 0 && rooms.map((r, i) => (
+          {filteredRooms.length > 0 && filteredRooms.map((r, i) => (
             <Reveal key={r.key} delay={i * 100} className="group">
               <div className="rounded-xl overflow-hidden border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow">
                 <div className="overflow-hidden">

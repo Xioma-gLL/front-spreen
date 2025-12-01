@@ -49,8 +49,8 @@ const rooms = [
   },
   {
     key: 'r7',
-    title: 'Suite',
-    desc: { es: 'Suite completa con sala privada.', en: 'Full suite with private living area.' },
+    title: 'Triple Room',
+    desc: { es: 'Habitación triple con tres camas o distribución para 3 personas.', en: 'Triple room with three beds or layout for 3 persons.' },
     capacity: 3,
     price: 270,
     img: 'http://plazatrujillo.com/wp-content/uploads/2025/09/WhatsApp-Image-2025-09-09-at-11.21.52-AM-1.jpg',
@@ -63,14 +63,7 @@ const rooms = [
     price: 120,
     img: 'http://plazatrujillo.com/wp-content/uploads/2025/09/WhatsApp-Image-2025-09-16-at-2.44.35-PM.jpeg',
   },
-  {
-    key: 'r9',
-    title: 'Economy Room',
-    desc: { es: 'Habitación económica y funcional.', en: 'Economy room that is functional.' },
-    capacity: 1,
-    price: 50,
-    img: 'http://plazatrujillo.com/wp-content/uploads/2025/09/WhatsApp-Image-2025-09-09-at-11.21.47-AM.jpeg',
-  },
+  // r9 removed (Economy Room) per requested change
   {
     key: 'r10',
     title: 'Honeymoon Suite',
@@ -111,14 +104,7 @@ const rooms = [
     price: 450,
     img: 'http://plazatrujillo.com/wp-content/uploads/2025/09/WhatsApp-Image-2025-09-16-at-2.44.35-PM.jpeg',
   },
-  {
-    key: 'r15',
-    title: 'Budget Double',
-    desc: { es: 'Habitación doble económica.', en: 'Budget double room.' },
-    capacity: 2,
-    price: 70,
-    img: 'http://plazatrujillo.com/wp-content/uploads/2025/09/WhatsApp-Image-2025-09-09-at-11.21.47-AM.jpeg',
-  },
+  // r15 removed (Budget Double) per requested change
 ]
 
 export default rooms

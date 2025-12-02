@@ -1,8 +1,10 @@
-import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useI18n } from '../context/LanguageContext'
 import { useAuth } from '../context/AuthContext'
 import AuthModal from './AuthModal'
+import InfoModal from './InfoModal'
+import ProfileModal from './ProfileModal'
 
 // Small inline icon components (SVG)
 const IconUser = ({ className = 'w-5 h-5' }) => (
@@ -52,12 +54,71 @@ const navLinks = [
 ]
 
 export default function Header() {
+  // Verificar si se debe abrir el modal de login al inicializar
+  const shouldOpenLoginOnMount = () => {
+    const shouldOpen = sessionStorage.getItem('openLoginModal') === 'true'
+    if (shouldOpen) {
+      sessionStorage.removeItem('openLoginModal')
+    }
+    return shouldOpen
+  }
+
   const [open, setOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
-  const [authModalOpen, setAuthModalOpen] = useState(false)
+  const [currencyMenuOpen, setCurrencyMenuOpen] = useState(false)
+  const [currency, setCurrency] = useState('PEN')
+  const [authModalOpen, setAuthModalOpen] = useState(shouldOpenLoginOnMount)
   const [authModalView, setAuthModalView] = useState('login')
+  const [infoModalOpen, setInfoModalOpen] = useState(false)
+  const [profileModalOpen, setProfileModalOpen] = useState(false)
+  const [profileModalSection, setProfileModalSection] = useState('profile')
   const { lang, setLang, t } = useI18n()
   const { user, isAuthenticated, logout } = useAuth()
+  const navigate = useNavigate()
+
+  // Refs para detectar clics fuera de los dropdowns
+  const userMenuRef = useRef(null)
+  const currencyMenuRef = useRef(null)
+
+  // Cerrar dropdowns al hacer clic fuera
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setUserMenuOpen(false)
+      }
+      if (currencyMenuRef.current && !currencyMenuRef.current.contains(event.target)) {
+        setCurrencyMenuOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  // Función para abrir un dropdown y cerrar los demás
+  const toggleUserMenu = () => {
+    setCurrencyMenuOpen(false)
+    setUserMenuOpen(!userMenuOpen)
+  }
+
+  const toggleCurrencyMenu = () => {
+    setUserMenuOpen(false)
+    setCurrencyMenuOpen(!currencyMenuOpen)
+  }
+
+  const handleLogout = () => {
+    logout()
+    navigate('/')
+    setAuthModalOpen(true)
+  }
+
+  const currencies = [
+    { code: 'PEN', symbol: 'S/.', name: 'PE Nuevo Sol' },
+    { code: 'USD', symbol: '$', name: 'US Dollar' },
+    { code: 'EUR', symbol: '€', name: 'Euro' },
+  ]
+
+  const currentCurrency = currencies.find(c => c.code === currency)
 
   const openAuthModal = (view = 'login') => {
     setAuthModalView(view)
@@ -79,17 +140,49 @@ export default function Header() {
 
             {/* Derecha: Contacto e idioma */}
             <div className="flex items-center gap-6">
-              <a href="tel:+51992810971" className="flex items-center gap-1.5 text-gray-600 hover:text-[#591117] transition-colors">
+              <a href="tel:+51992810971" className="group flex items-center gap-1.5 text-gray-600 hover:text-[#591117] transition-colors">
                 <IconPhone className="w-4 h-4" />
-                <span>+51 992810971</span>
+                <span className="relative">
+                  +51 992810971
+                  <span className="absolute left-0 -bottom-1 w-0 h-px bg-[#591117] transition-all duration-300 ease-out group-hover:w-full"></span>
+                </span>
               </a>
-              <a href="mailto:reservas@plazatrujillo.com" className="flex items-center gap-1.5 text-gray-600 hover:text-[#591117] transition-colors">
+              <a href="mailto:reservas@plazatrujillo.com" className="group flex items-center gap-1.5 text-gray-600 hover:text-[#591117] transition-colors">
                 <IconMail className="w-4 h-4" />
-                <span>reservas@plazatrujillo.com</span>
+                <span className="relative">
+                  reservas@plazatrujillo.com
+                  <span className="absolute left-0 -bottom-1 w-0 h-px bg-[#591117] transition-all duration-300 ease-out group-hover:w-full"></span>
+                </span>
               </a>
-              <div className="flex items-center gap-1 text-gray-600">
-                <span>S/.</span>
-                <span>Peruvian Nuevo Sol</span>
+              <div ref={currencyMenuRef} className="relative flex items-center gap-1 text-gray-600">
+                <button
+                  type="button"
+                  onClick={toggleCurrencyMenu}
+                  className="flex items-center gap-1 hover:text-[#591117] transition-colors cursor-pointer"
+                >
+                  <span>{currentCurrency?.symbol}</span>
+                  <span>{currentCurrency?.code}</span>
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+
+                {/* Dropdown de monedas */}
+                {currencyMenuOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-44 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-100">
+                    {currencies.map((c) => (
+                      <button
+                        key={c.code}
+                        type="button"
+                        onClick={() => { setCurrency(c.code); setCurrencyMenuOpen(false) }}
+                        className={`flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer ${currency === c.code ? 'text-[#591117] font-medium' : 'text-gray-700'}`}
+                      >
+                        <span className="w-6">{c.symbol}</span>
+                        <span>{c.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
               
               {/* Selector de idioma */}
@@ -98,25 +191,19 @@ export default function Header() {
                   <button 
                     type="button" 
                     onClick={() => setLang('es')} 
-                    className="flex items-center gap-2 text-gray-600 hover:text-[#591117] transition-colors"
+                    className="flex items-center gap-2 text-gray-600 hover:text-[#591117] transition-colors cursor-pointer"
                   >
                     <span className="fi fi-es text-lg"></span>
                     <span>Español</span>
-                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
                   </button>
                 ) : (
                   <button 
                     type="button" 
                     onClick={() => setLang('en')} 
-                    className="flex items-center gap-2 text-gray-600 hover:text-[#591117] transition-colors"
+                    className="flex items-center gap-2 text-gray-600 hover:text-[#591117] transition-colors cursor-pointer"
                   >
                     <span className="fi fi-us text-lg"></span>
                     <span>English</span>
-                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
                   </button>
                 )}
               </div>
@@ -154,31 +241,47 @@ export default function Header() {
               {/* Links de navegación */}
               <nav className="flex items-center gap-6">
                 {navLinks.map((l) => (
-                  <NavLink
-                    key={l.key}
-                    to={l.href}
-                    className={({ isActive }) =>
-                      `text-gray-700 hover:text-[#591117] font-medium transition-colors ${isActive ? 'text-[#591117]' : ''}`
-                    }
-                  >
-                    {t(l.key)}
-                  </NavLink>
+                  l.href === '/info' ? (
+                    <button
+                      key={l.key}
+                      onClick={() => setInfoModalOpen(true)}
+                      className="text-gray-700 hover:text-[#591117] font-medium transition-colors cursor-pointer"
+                    >
+                      {t(l.key)}
+                    </button>
+                  ) : (
+                    <NavLink
+                      key={l.key}
+                      to={l.href}
+                      className={({ isActive }) =>
+                        `text-gray-700 hover:text-[#591117] font-medium transition-colors ${isActive ? 'text-[#591117]' : ''}`
+                      }
+                    >
+                      {t(l.key)}
+                    </NavLink>
+                  )
                 ))}
               </nav>
 
               {/* Botón de autenticación */}
               {isAuthenticated ? (
-                <div className="relative">
+                <div ref={userMenuRef} className="relative">
                   <button
-                    onClick={() => setUserMenuOpen(!userMenuOpen)}
-                    className="flex items-center gap-2 text-gray-700 hover:text-gray-900 focus:outline-none"
+                    onClick={toggleUserMenu}
+                    className="flex items-center gap-2 text-gray-700 hover:text-gray-900 focus:outline-none cursor-pointer"
                   >
-                    {user?.avatar ? (
-                      <img src={user.avatar} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />
+                    {user?.photoUrl ? (
+                      <img 
+                        src={user.photoUrl} 
+                        alt="Avatar" 
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
                     ) : (
-                      <IconUserCircle className="w-8 h-8 text-gray-500" />
+                      <div className="w-8 h-8 rounded-full bg-[#591117] flex items-center justify-center text-white font-semibold text-sm">
+                        {user?.firstName?.charAt(0)?.toUpperCase()}{user?.lastName?.charAt(0)?.toUpperCase()}
+                      </div>
                     )}
-                    <span className="font-medium">{user?.firstName}</span>
+                    <span className="font-medium">{user?.firstName} {user?.lastName}</span>
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                     </svg>
@@ -186,21 +289,25 @@ export default function Header() {
 
                   {userMenuOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                      <div className="px-4 py-2 text-sm text-gray-600 border-b border-gray-200">
-                        <div className="font-medium">{user?.firstName} {user?.lastName}</div>
-                        <div className="text-xs truncate">{user?.email}</div>
-                      </div>
-                      <Link
-                        to="/perfil"
-                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setUserMenuOpen(false)}
+                      <button
+                        onClick={() => { setProfileModalSection('reservations'); setProfileModalOpen(true); setUserMenuOpen(false) }}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                      >
+                        <svg className="mr-3 w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm-8 4H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z" />
+                        </svg>
+                        Mis Reservas
+                      </button>
+                      <button
+                        onClick={() => { setProfileModalSection('profile'); setProfileModalOpen(true); setUserMenuOpen(false) }}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
                       >
                         <IconUser className="mr-3 w-4 h-4" />
                         Mi perfil
-                      </Link>
+                      </button>
                       <button
-                        onClick={() => { logout(); setUserMenuOpen(false) }}
-                        className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                        onClick={() => { handleLogout(); setUserMenuOpen(false) }}
+                        className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100 cursor-pointer"
                       >
                         <IconSignOut className="mr-3 w-4 h-4" />
                         Cerrar sesión
@@ -211,7 +318,7 @@ export default function Header() {
               ) : (
                 <button
                   onClick={() => openAuthModal('login')}
-                  className="bg-[#591117] hover:bg-[#7a171f] text-white px-6 py-2.5 rounded-full font-medium transition-colors"
+                  className="bg-[#591117] hover:bg-[#7a171f] text-white px-6 py-2.5 rounded-full font-medium transition-colors cursor-pointer"
                 >
                   Iniciar sesión
                 </button>
@@ -237,16 +344,26 @@ export default function Header() {
           <div className="md:hidden border-t border-gray-200 bg-white">
             <div className="px-4 py-4 space-y-3">
               {navLinks.map((l) => (
-                <NavLink 
-                  key={l.key} 
-                  to={l.href} 
-                  className={({ isActive }) =>
-                    `block py-2 text-gray-700 hover:text-[#591117] ${isActive ? 'text-[#591117] font-medium' : ''}`
-                  }
-                  onClick={() => setOpen(false)}
-                >
-                  {t(l.key)}
-                </NavLink>
+                l.href === '/info' ? (
+                  <button
+                    key={l.key}
+                    onClick={() => { setInfoModalOpen(true); setOpen(false) }}
+                    className="block py-2 text-gray-700 hover:text-[#591117] cursor-pointer w-full text-left"
+                  >
+                    {t(l.key)}
+                  </button>
+                ) : (
+                  <NavLink 
+                    key={l.key} 
+                    to={l.href} 
+                    className={({ isActive }) =>
+                      `block py-2 text-gray-700 hover:text-[#591117] ${isActive ? 'text-[#591117] font-medium' : ''}`
+                    }
+                    onClick={() => setOpen(false)}
+                  >
+                    {t(l.key)}
+                  </NavLink>
+                )
               ))}
 
               {/* Información de contacto móvil */}
@@ -288,20 +405,37 @@ export default function Header() {
               <div className="pt-3 border-t border-gray-200">
                 {isAuthenticated ? (
                   <>
-                    <div className="py-2 text-sm text-gray-600">
-                      <div className="font-medium">{user?.firstName} {user?.lastName}</div>
-                      <div className="text-xs">{user?.email}</div>
+                    <div className="flex items-center gap-3 pb-3 mb-2 border-b border-gray-100">
+                      {user?.photoUrl ? (
+                        <img src={user.photoUrl} alt="Avatar" className="w-10 h-10 rounded-full object-cover" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-[#591117] flex items-center justify-center text-white font-semibold">
+                          {user?.firstName?.charAt(0)?.toUpperCase()}{user?.lastName?.charAt(0)?.toUpperCase()}
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-medium text-gray-800">{user?.firstName} {user?.lastName}</p>
+                        <p className="text-sm text-gray-500">{user?.email}</p>
+                      </div>
                     </div>
-                    <Link 
-                      to="/perfil" 
-                      className="flex items-center py-2 text-gray-700 hover:text-[#591117]" 
-                      onClick={() => setOpen(false)}
+                    <button 
+                      onClick={() => { setProfileModalSection('reservations'); setProfileModalOpen(true); setOpen(false) }}
+                      className="flex items-center py-2 text-gray-700 hover:text-[#591117] w-full"
+                    >
+                      <svg className="mr-3 w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm-8 4H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z" />
+                      </svg>
+                      Mis Reservas
+                    </button>
+                    <button 
+                      onClick={() => { setProfileModalSection('profile'); setProfileModalOpen(true); setOpen(false) }}
+                      className="flex items-center py-2 text-gray-700 hover:text-[#591117] w-full"
                     >
                       <IconUser className="mr-3 w-4 h-4" />
                       Mi perfil
-                    </Link>
+                    </button>
                     <button 
-                      onClick={() => { logout(); setOpen(false) }} 
+                      onClick={() => { handleLogout(); setOpen(false) }} 
                       className="flex items-center py-2 text-red-600"
                     >
                       <IconSignOut className="mr-3 w-4 h-4" />
@@ -335,6 +469,20 @@ export default function Header() {
         isOpen={authModalOpen} 
         onClose={() => setAuthModalOpen(false)}
         initialView={authModalView}
+      />
+
+      {/* Modal de información */}
+      <InfoModal 
+        isOpen={infoModalOpen} 
+        onClose={() => setInfoModalOpen(false)}
+      />
+
+      {/* Modal de perfil */}
+      <ProfileModal 
+        isOpen={profileModalOpen} 
+        onClose={() => setProfileModalOpen(false)}
+        onLogout={() => { setProfileModalOpen(false); handleLogout() }}
+        initialSection={profileModalSection}
       />
 
       {/* Spacer para contenido */}

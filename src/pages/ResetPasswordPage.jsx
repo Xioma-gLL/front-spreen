@@ -154,12 +154,15 @@ export default function ResetPasswordPage() {
           <p className="text-gray-600 mb-6">
             Tu contraseña ha sido restablecida correctamente. Ya puedes iniciar sesión con tu nueva contraseña.
           </p>
-          <Link
-            to="/login"
-            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#591117] to-[#F26A4B] text-white font-medium rounded-lg hover:from-[#F21905] hover:to-[#8C0808] transition-all duration-200"
+          <button
+            onClick={() => {
+              sessionStorage.setItem('openLoginModal', 'true')
+              navigate('/')
+            }}
+            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#591117] to-[#F26A4B] text-white font-medium rounded-lg hover:from-[#F21905] hover:to-[#8C0808] transition-all duration-200 cursor-pointer"
           >
             Ir a iniciar sesión
-          </Link>
+          </button>
         </div>
       </div>
     )
@@ -275,12 +278,15 @@ export default function ResetPasswordPage() {
 
         {/* Enlace a login */}
         <div className="text-center">
-          <Link
-            to="/login"
-            className="text-[#591117] hover:text-[#F26A4B] transition-colors"
+          <button
+            onClick={() => {
+              sessionStorage.setItem('openLoginModal', 'true')
+              navigate('/')
+            }}
+            className="text-[#591117] hover:text-[#F26A4B] transition-colors cursor-pointer"
           >
             ← Volver al inicio de sesión
-          </Link>
+          </button>
         </div>
       </div>
     </div>

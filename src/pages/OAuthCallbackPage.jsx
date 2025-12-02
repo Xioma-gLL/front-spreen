@@ -17,6 +17,7 @@ export default function OAuthCallbackPage() {
     const email = searchParams.get('email')
     const firstName = searchParams.get('firstName')
     const lastName = searchParams.get('lastName')
+    const photoUrl = searchParams.get('photoUrl')
 
     if (token && email) {
       // Guardar datos del usuario
@@ -24,6 +25,7 @@ export default function OAuthCallbackPage() {
         email: decodeURIComponent(email),
         firstName: decodeURIComponent(firstName || ''),
         lastName: decodeURIComponent(lastName || ''),
+        photoUrl: photoUrl ? decodeURIComponent(photoUrl) : null,
       }
       
       localStorage.setItem('token', token)

@@ -51,6 +51,7 @@ export function AuthProvider({ children }) {
           lastName: data.lastName,
           phone: data.phone,
           phonePrefix: data.phonePrefix,
+          photoUrl: data.photoUrl,
         }
         setUser(userData)
         setToken(data.token)
@@ -97,6 +98,7 @@ export function AuthProvider({ children }) {
           lastName: data.lastName,
           phone: data.phone,
           phonePrefix: data.phonePrefix,
+          photoUrl: data.photoUrl,
         }
         setUser(user)
         setToken(data.token)

@@ -1,35 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useI18n } from '../context/LanguageContext'
-
-const CloseIcon = ({ className }) => (
-  <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-  </svg>
-)
-
-const GoogleIcon = ({ className }) => (
-  <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24" height="24">
-    <path fill="#fbc02d" d="M43.6 20.5H42V20H24v8h11.3C33.5 32.9 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.2l5.7-5.7C34.9 6.1 29.8 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c10.9 0 19.2-7.9 19.2-19 0-1.3-.1-2.6-.6-3.5z"/>
-    <path fill="#e53935" d="M6.3 14.7l6.6 4.8C14.1 16 18.8 12 24 12c3.1 0 5.9 1.2 8 3.2l5.7-5.7C34.9 6.1 29.8 4 24 4 16 4 8.9 8.2 6.3 14.7z"/>
-    <path fill="#4caf50" d="M24 44c6.2 0 11.7-2.4 15.9-6.4l-7.4-6.2C29.9 33.6 27.1 34.8 24 34.8c-5.2 0-9.5-3.1-11.3-7.4l-6.8 5.2C8.1 39 15.3 44 24 44z"/>
-    <path fill="#1565c0" d="M43.6 20.5H42V20H24v8h11.3c-1 2.6-3.6 5.4-7.3 7.2 0 0 0 0 0 0l7.4 6.2C40.8 39.8 48 33.3 48 24 48 22 47.8 21 47.6 20h-4z"/>
-  </svg>
-)
-
-const EyeIcon = ({ className }) => (
-  <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-    <circle cx="12" cy="12" r="3" strokeWidth="2" />
-  </svg>
-)
-
-const EyeOffIcon = ({ className }) => (
-  <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3l18 18M10.47 10.47A3 3 0 0113.53 13.53" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.88 5.66A9.96 9.96 0 0121 12c-1.274 4.057-5.065 7-9.542 7a9.96 9.96 0 01-8.58-4.64" />
-  </svg>
-)
+import { FcGoogle } from 'react-icons/fc'
+import { IoClose, IoEye, IoEyeOff } from 'react-icons/io5'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api'
 
@@ -41,6 +14,7 @@ export default function AuthModal({ isOpen, onClose, initialView = 'login' }) {
 
   useEffect(() => {
     if (isOpen) {
+      setCurrentView('login') // Siempre mostrar login al abrir
       setIsVisible(true)
       setTimeout(() => setIsAnimating(true), 10)
     } else {
@@ -80,23 +54,24 @@ export default function AuthModal({ isOpen, onClose, initialView = 'login' }) {
   return (
     <div 
       className={`fixed inset-0 z-100 flex items-center justify-center transition-all duration-300 ${
-        isAnimating ? 'bg-black/50 backdrop-blur-sm' : 'bg-transparent'
+        isAnimating ? 'bg-black/50' : 'bg-transparent'
       }`}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div 
-        className={`relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto transition-all duration-300 transform ${
+        className={`relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto transition-all duration-300 transform scrollbar-hide ${
           isAnimating 
             ? 'opacity-100 scale-100 translate-y-0' 
             : 'opacity-0 scale-95 translate-y-4'
         }`}
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {/* Botón cerrar */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors z-10"
+          className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors z-10 cursor-pointer"
         >
-          <CloseIcon className="w-5 h-5" />
+          <IoClose className="w-5 h-5" />
         </button>
 
         {/* Contenido según la vista */}
@@ -226,7 +201,7 @@ function LoginContent({ onChangeView, onSuccess }) {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer"
               >
-                {showPassword ? <EyeOffIcon className="text-gray-400" /> : <EyeIcon className="text-gray-400" />}
+                {showPassword ? <IoEyeOff className="w-5 h-5 text-gray-400" /> : <IoEye className="w-5 h-5 text-gray-400" />}
               </button>
             </div>
           </div>
@@ -287,7 +262,7 @@ function LoginContent({ onChangeView, onSuccess }) {
           onClick={() => handleSocialLogin('google')}
           className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-lg hover:bg-[#FFF7F7] transition-colors duration-200 cursor-pointer"
         >
-          <GoogleIcon className="w-5 h-5" />
+          <FcGoogle className="w-5 h-5" />
           <span className="text-gray-600 font-medium">Google</span>
         </button>
       </div>
@@ -495,7 +470,7 @@ function RegisterContent({ onChangeView, onSuccess }) {
                 <button
                   type="button"
                   onClick={() => setShowPrefixDropdown(!showPrefixDropdown)}
-                  className="flex items-center gap-1 px-3 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex items-center gap-1 px-3 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                 >
                   <span className={`fi fi-${selectedCountry.country}`}></span>
                   <span className="text-sm">{formData.phonePrefix}</span>
@@ -513,7 +488,7 @@ function RegisterContent({ onChangeView, onSuccess }) {
                           setFormData(prev => ({ ...prev, phonePrefix: country.code }))
                           setShowPrefixDropdown(false)
                         }}
-                        className="flex items-center gap-2 w-full px-3 py-2 hover:bg-gray-100 text-sm text-left"
+                        className="flex items-center gap-2 w-full px-3 py-2 hover:bg-gray-100 text-sm text-left cursor-pointer"
                       >
                         <span className={`fi fi-${country.country}`}></span>
                         <span className="flex-1">{country.name}</span>
@@ -553,9 +528,9 @@ function RegisterContent({ onChangeView, onSuccess }) {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer"
               >
-                {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                {showPassword ? <IoEyeOff className="w-5 h-5" /> : <IoEye className="w-5 h-5" />}
               </button>
             </div>
           </div>
@@ -579,9 +554,9 @@ function RegisterContent({ onChangeView, onSuccess }) {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer"
               >
-                {showConfirmPassword ? <EyeOffIcon /> : <EyeIcon />}
+                {showConfirmPassword ? <IoEyeOff className="w-5 h-5" /> : <IoEye className="w-5 h-5" />}
               </button>
             </div>
           </div>
@@ -608,7 +583,7 @@ function RegisterContent({ onChangeView, onSuccess }) {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-[#591117] to-[#F26A4B] text-white py-3 px-4 rounded-lg font-medium hover:from-[#F21905] hover:to-[#8C0808] focus:outline-none focus:ring-2 focus:ring-[#F26A4B] focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-[#591117] to-[#F26A4B] text-white py-3 px-4 rounded-lg font-medium hover:from-[#F21905] hover:to-[#8C0808] focus:outline-none focus:ring-2 focus:ring-[#F26A4B] focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {isLoading ? (
               <div className="flex items-center justify-center">
@@ -636,7 +611,7 @@ function RegisterContent({ onChangeView, onSuccess }) {
           onClick={() => handleSocialRegister('google')}
           className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-lg hover:bg-[#FFF7F7] transition-colors duration-200 cursor-pointer"
         >
-          <GoogleIcon className="w-5 h-5" />
+          <FcGoogle className="w-5 h-5" />
           <span className="text-gray-600 font-medium">Google</span>
         </button>
       </div>
@@ -725,7 +700,7 @@ function ForgotPasswordContent({ onChangeView }) {
           <button
             type="button"
             onClick={() => onChangeView('login')}
-            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#591117] to-[#F26A4B] text-white font-medium rounded-lg hover:from-[#F21905] hover:to-[#8C0808] transition-all duration-200"
+            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#591117] to-[#F26A4B] text-white font-medium rounded-lg hover:from-[#F21905] hover:to-[#8C0808] transition-all duration-200 cursor-pointer"
           >
             Volver al inicio de sesión
           </button>
@@ -787,7 +762,7 @@ function ForgotPasswordContent({ onChangeView }) {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-[#591117] to-[#F26A4B] text-white py-3 px-4 rounded-lg font-medium hover:from-[#F21905] hover:to-[#8C0808] focus:outline-none focus:ring-2 focus:ring-[#F26A4B] focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-[#591117] to-[#F26A4B] text-white py-3 px-4 rounded-lg font-medium hover:from-[#F21905] hover:to-[#8C0808] focus:outline-none focus:ring-2 focus:ring-[#F26A4B] focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {isLoading ? (
               <div className="flex items-center justify-center">
@@ -829,7 +804,7 @@ function ForgotPasswordContent({ onChangeView }) {
           <button
             type="button"
             onClick={() => onChangeView('login')}
-            className="font-medium text-[#591117] hover:text-[#F26A4B] transition-colors"
+            className="font-medium text-[#591117] hover:text-[#F26A4B] transition-colors cursor-pointer"
           >
             Inicia sesión
           </button>
@@ -839,7 +814,7 @@ function ForgotPasswordContent({ onChangeView }) {
           <button
             type="button"
             onClick={() => onChangeView('register')}
-            className="text-[#591117] hover:text-[#F26A4B] transition-colors"
+            className="text-[#591117] hover:text-[#F26A4B] transition-colors cursor-pointer"
           >
             Regístrate
           </button>

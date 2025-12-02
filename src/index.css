@@ -1,11 +1,15 @@
 @import "tailwindcss";
-
 :root {
   --color-maroon: #591117;
   --color-salmon: #F26A4B;
   --color-bright: #F21905;
   --color-deep: #8C0808;
   --color-light: #F2F2F2;
+}
+
+/* Ocultar scrollbar pero mantener scroll funcional */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 /* chat styles */

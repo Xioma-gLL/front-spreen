@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { IoClose } from 'react-icons/io5'
 import { useAuth } from '../context/AuthContext'
 
-// --- ICONOS (Sin cambios) ---
+// Iconos SVG inline
 const IconCalendar = ({ className = 'w-5 h-5' }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
     <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm-8 4H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z" />
@@ -57,34 +57,18 @@ const IconEdit = ({ className = 'w-4 h-4' }) => (
   </svg>
 )
 
-const IconArrowLeft = ({ className = 'w-6 h-6' }) => (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-        <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
-    </svg>
-)
-
 export default function ProfileModal({ isOpen, onClose, onLogout, initialSection = 'profile' }) {
   const { user } = useAuth()
   const [activeSection, setActiveSection] = useState(initialSection)
   const [isEditing, setIsEditing] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const [isAnimating, setIsAnimating] = useState(false)
-  
-  // Estado para detectar si es móvil (para lógica de navegación)
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 640)
-
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     phone: '',
     address: ''
   })
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 640)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
 
   useEffect(() => {
     if (user) {
@@ -99,10 +83,14 @@ export default function ProfileModal({ isOpen, onClose, onLogout, initialSection
 
   useEffect(() => {
     if (isOpen) {
-      // En móvil, siempre empezamos en el menú principal ('menu') para evitar confusión
-      // En escritorio, usamos la sección inicial
-      setActiveSection(window.innerWidth < 640 ? 'menu' : initialSection)
+      setActiveSection(initialSection)
       setIsEditing(false)
+    }
+  }, [isOpen, initialSection])
+
+  // Manejar animación de entrada/salida
+  useEffect(() => {
+    if (isOpen) {
       setIsVisible(true)
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
@@ -116,9 +104,15 @@ export default function ProfileModal({ isOpen, onClose, onLogout, initialSection
       }, 300)
       return () => clearTimeout(timer)
     }
-  }, [isOpen, initialSection])
+  }, [isOpen])
 
   if (!isVisible) return null
+
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose()
+    }
+  }
 
   const menuItems = [
     { key: 'reservations', label: 'Mis Reservas', icon: IconCalendar },
@@ -132,10 +126,8 @@ export default function ProfileModal({ isOpen, onClose, onLogout, initialSection
     return first + last
   }
 
-  // --- RENDERIZADO DEL CONTENIDO ---
-
   const renderProfileContent = () => (
-    <div className="animate-fade-in">
+    <div>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-gray-800">Mi perfil</h2>
         {!isEditing && (
@@ -149,6 +141,7 @@ export default function ProfileModal({ isOpen, onClose, onLogout, initialSection
         )}
       </div>
 
+      {/* Avatar y nombre */}
       <div className="flex items-center gap-4 mb-8">
         {user?.photoUrl ? (
           <img src={user.photoUrl} alt="Avatar" className="w-16 h-16 rounded-full object-cover" />
@@ -160,6 +153,7 @@ export default function ProfileModal({ isOpen, onClose, onLogout, initialSection
         <h3 className="text-xl font-medium text-gray-800">{user?.firstName} {user?.lastName}</h3>
       </div>
 
+      {/* Sección Usuario */}
       <div className="mb-6">
         <h4 className="text-sm font-medium text-gray-500 mb-3 pb-2 border-b border-gray-200">Usuario</h4>
         <div className="space-y-4">
@@ -195,13 +189,14 @@ export default function ProfileModal({ isOpen, onClose, onLogout, initialSection
         </div>
       </div>
 
+      {/* Sección Contactos */}
       <div className="mb-6">
         <h4 className="text-sm font-medium text-gray-500 mb-3 pb-2 border-b border-gray-200">Contactos</h4>
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <IconEmail className="w-5 h-5 text-gray-400" />
             <span className="text-gray-600 w-24">Email</span>
-            <span className="text-gray-800 text-sm sm:text-base break-all">{user?.email}</span>
+            <span className="text-gray-800">{user?.email}</span>
           </div>
           <div className="flex items-center gap-3">
             <IconPhone className="w-5 h-5 text-gray-400" />
@@ -212,14 +207,14 @@ export default function ProfileModal({ isOpen, onClose, onLogout, initialSection
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 className="flex-1 px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#591117] focus:border-transparent text-sm"
-                placeholder="Tu número"
+                placeholder="Tu número de teléfono"
               />
             ) : (
               <span 
                 className={user?.phone ? 'text-gray-800' : 'text-[#591117] cursor-pointer hover:underline'}
                 onClick={() => !user?.phone && setIsEditing(true)}
               >
-                {user?.phone || 'Agrega tu número'}
+                {user?.phone || 'Agrega tu número de teléfono'}
               </span>
             )}
           </div>
@@ -246,11 +241,15 @@ export default function ProfileModal({ isOpen, onClose, onLogout, initialSection
         </div>
       </div>
 
+      {/* Botones de edición */}
       {isEditing && (
         <div className="flex gap-3 mt-6">
           <button
-            onClick={() => setIsEditing(false)}
-            className="px-4 py-2 bg-[#591117] text-white rounded-lg hover:bg-[#7a171f] transition-colors cursor-pointer text-sm"
+            onClick={() => {
+              // Aquí guardarías los cambios
+              setIsEditing(false)
+            }}
+            className="px-4 py-2 bg-[#591117] text-white rounded-lg hover:bg-[#7a171f] transition-colors cursor-pointer"
           >
             Guardar cambios
           </button>
@@ -264,7 +263,7 @@ export default function ProfileModal({ isOpen, onClose, onLogout, initialSection
               })
               setIsEditing(false)
             }}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors cursor-pointer text-sm"
+            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors cursor-pointer"
           >
             Cancelar
           </button>
@@ -274,10 +273,10 @@ export default function ProfileModal({ isOpen, onClose, onLogout, initialSection
   )
 
   const renderReservationsContent = () => (
-    <div className="animate-fade-in">
+    <div>
       <h2 className="text-xl font-semibold text-gray-800 mb-6">Mis Reservas</h2>
-      <div className="text-gray-500 text-center py-12 flex flex-col items-center">
-        <IconCalendar className="w-16 h-16 mb-4 text-gray-300" />
+      <div className="text-gray-500 text-center py-12">
+        <IconCalendar className="w-16 h-16 mx-auto mb-4 text-gray-300" />
         <p>No tienes reservas activas</p>
         <button 
           onClick={() => setActiveSection('newReservation')}
@@ -290,10 +289,10 @@ export default function ProfileModal({ isOpen, onClose, onLogout, initialSection
   )
 
   const renderNewReservationContent = () => (
-    <div className="animate-fade-in">
+    <div>
       <h2 className="text-xl font-semibold text-gray-800 mb-6">Nueva reserva</h2>
-      <div className="text-gray-500 text-center py-12 flex flex-col items-center">
-        <IconCalendarPlus className="w-16 h-16 mb-4 text-gray-300" />
+      <div className="text-gray-500 text-center py-12">
+        <IconCalendarPlus className="w-16 h-16 mx-auto mb-4 text-gray-300" />
         <p>Selecciona las fechas y habitación deseada</p>
         <button 
           onClick={onClose}
@@ -304,165 +303,87 @@ export default function ProfileModal({ isOpen, onClose, onLogout, initialSection
       </div>
     </div>
   )
-  
-  // Menú exclusivo para vista móvil
-  const renderMobileMenu = () => (
-    <div className="flex flex-col h-full animate-fade-in">
-        <div className="flex items-center gap-4 mb-8 p-2">
-            {user?.photoUrl ? (
-                <img src={user.photoUrl} alt="Avatar" className="w-14 h-14 rounded-full object-cover" />
-            ) : (
-                <div className="w-14 h-14 rounded-full bg-[#591117] flex items-center justify-center text-white font-semibold text-lg">
-                    {getInitials()}
-                </div>
-            )}
-            <div>
-                <p className="text-gray-500 text-sm">Bienvenido</p>
-                <p className="font-semibold text-gray-800 text-lg">{user?.firstName} {user?.lastName}</p>
-            </div>
-        </div>
-
-        <nav className="flex-1 space-y-2">
-            {menuItems.map((item) => (
-                <button
-                    key={item.key}
-                    onClick={() => setActiveSection(item.key)}
-                    className="w-full flex items-center gap-4 px-4 py-4 rounded-xl text-left bg-gray-50 hover:bg-gray-100 active:bg-gray-200 transition-colors border border-gray-100 shadow-sm"
-                >
-                    <div className="bg-white p-2 rounded-full shadow-sm text-[#591117]">
-                         <item.icon className="w-6 h-6" />
-                    </div>
-                    <span className="font-medium text-gray-700 text-lg">{item.label}</span>
-                </button>
-            ))}
-        </nav>
-
-        <div className="mt-auto pt-6 border-t border-gray-100">
-            <button
-                onClick={onLogout}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-red-600 hover:bg-red-50 transition-colors"
-            >
-                <IconSignOut className="w-6 h-6" />
-                <span className="font-medium text-lg">Cerrar sesión</span>
-            </button>
-        </div>
-    </div>
-  )
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-end sm:items-center justify-center transition-all duration-300 ease-out ${
-        isAnimating ? 'bg-black/50 backdrop-blur-sm' : 'bg-black/0'
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 ease-out ${
+        isAnimating ? 'bg-black/50' : 'bg-black/0'
       }`}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose()
-      }}
+      onClick={handleBackdropClick}
     >
-      {/* 
-         CONTENEDOR PRINCIPAL 
-         - Móvil: w-full h-full (pantalla completa), sin bordes redondeados.
-         - Desktop: max-w-4xl, bordes redondeados, altura automática.
-      */}
       <div 
-        className={`bg-white w-full h-full sm:h-auto sm:max-h-[85vh] sm:max-w-4xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col sm:flex-row transition-all duration-300 ease-out ${
+        className={`bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex transition-all duration-300 ease-out ${
           isAnimating 
-            ? 'opacity-100 translate-y-0 scale-100' 
-            : 'opacity-0 translate-y-10 sm:scale-95'
+            ? 'opacity-100 scale-100 translate-y-0' 
+            : 'opacity-0 scale-95 translate-y-4'
         }`}
       >
-        {/* --- SIDEBAR (Solo visible en Desktop 'sm:flex') --- */}
-        <div className="hidden sm:flex flex-col w-64 bg-gray-50 border-r border-gray-200 h-full">
-          <div className="p-6 border-b border-gray-200">
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Área personal</h3>
+        {/* Sidebar izquierdo */}
+        <div className="w-64 bg-gray-50 border-r border-gray-200 flex flex-col">
+          {/* Header del sidebar */}
+          <div className="p-4 border-b border-gray-200">
+            <h3 className="text-sm font-medium text-gray-500 mb-3">Área personal</h3>
             <div className="flex items-center gap-3">
               {user?.photoUrl ? (
-                <img src={user.photoUrl} alt="Avatar" className="w-10 h-10 rounded-full object-cover shadow-sm" />
+                <img src={user.photoUrl} alt="Avatar" className="w-10 h-10 rounded-full object-cover" />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-[#591117] flex items-center justify-center text-white font-bold">
+                <div className="w-10 h-10 rounded-full bg-[#591117] flex items-center justify-center text-white font-semibold">
                   {getInitials()}
                 </div>
               )}
-              <div className="overflow-hidden">
-                <p className="font-medium text-gray-900 truncate text-sm">{user?.firstName}</p>
-                <p className="text-xs text-gray-500 truncate">Cliente</p>
+              <div>
+                <p className="font-medium text-gray-800 text-sm">Hola {user?.firstName} {user?.lastName}</p>
               </div>
             </div>
           </div>
 
-          <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+          {/* Menú de navegación */}
+          <nav className="flex-1 p-2">
             {menuItems.map((item) => (
               <button
                 key={item.key}
                 onClick={() => setActiveSection(item.key)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all duration-200 ${
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors cursor-pointer ${
                   activeSection === item.key
-                    ? 'bg-white text-[#591117] shadow-sm ring-1 ring-gray-200'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    ? 'bg-[#591117]/10 text-[#591117]'
+                    : 'text-gray-600 hover:bg-gray-100'
                 }`}
               >
-                <item.icon className={`w-5 h-5 ${activeSection === item.key ? 'text-[#591117]' : 'text-gray-400'}`} />
-                <span className="font-medium text-sm">{item.label}</span>
+                <item.icon className="w-5 h-5" />
+                <span className="font-medium">{item.label}</span>
               </button>
             ))}
           </nav>
 
-          <div className="p-3 border-t border-gray-200 bg-gray-50">
+          {/* Cerrar sesión */}
+          <div className="p-2 border-t border-gray-200">
             <button
               onClick={onLogout}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors group"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors cursor-pointer"
             >
-              <IconSignOut className="w-5 h-5 text-gray-400 group-hover:text-red-500" />
-              <span className="font-medium text-sm">Cerrar sesión</span>
+              <IconSignOut className="w-5 h-5" />
+              <span className="font-medium">Cerrar sesión</span>
             </button>
           </div>
         </div>
 
-        {/* --- CONTENIDO PRINCIPAL --- */}
-        <div className="flex-1 flex flex-col h-full bg-white relative">
-          
-          {/* Header Móvil y Desktop */}
-          <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-100 min-h-[60px]">
-            <div className="flex items-center gap-2">
-                {/* Botón Atrás (Solo en móvil y si no estamos en el menú) */}
-                {isMobile && activeSection !== 'menu' && (
-                    <button
-                        onClick={() => setActiveSection('menu')}
-                        className="p-2 -ml-2 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors mr-1"
-                    >
-                        <IconArrowLeft className="w-6 h-6 text-gray-600" />
-                    </button>
-                )}
-                
-                {/* Título dinámico */}
-                <h3 className="text-lg sm:text-xl font-bold text-gray-800">
-                    {isMobile && activeSection === 'menu' 
-                        ? 'Área Personal' 
-                        : menuItems.find(i => i.key === activeSection)?.label || 'Perfil'
-                    }
-                </h3>
-            </div>
-
+        {/* Contenido principal */}
+        <div className="flex-1 flex flex-col">
+          {/* Header con botón cerrar */}
+          <div className="flex justify-end p-4 border-b border-gray-100">
             <button
               onClick={onClose}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors cursor-pointer bg-gray-50 sm:bg-transparent"
+              className="p-2 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
             >
               <IoClose className="w-6 h-6 text-gray-500" />
             </button>
           </div>
 
-          {/* Área Scrollable */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-8 custom-scrollbar">
-            {isMobile && activeSection === 'menu' ? (
-                // Vista Menú Móvil
-                renderMobileMenu()
-            ) : (
-                // Vistas de Contenido (Perfil, Reservas, etc)
-                <>
-                    {activeSection === 'profile' && renderProfileContent()}
-                    {activeSection === 'reservations' && renderReservationsContent()}
-                    {activeSection === 'newReservation' && renderNewReservationContent()}
-                </>
-            )}
+          {/* Contenido */}
+          <div className="flex-1 overflow-y-auto p-6">
+            {activeSection === 'profile' && renderProfileContent()}
+            {activeSection === 'reservations' && renderReservationsContent()}
+            {activeSection === 'newReservation' && renderNewReservationContent()}
           </div>
         </div>
       </div>

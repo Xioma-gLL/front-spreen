@@ -20,12 +20,14 @@ export default function Footer() {
       <footer className="border-t border-gray-200 bg-white/80 backdrop-blur-sm">
         {/*
           CONTENEDOR PRINCIPAL:
-          - 'py-1' para padding vertical mínimo.
-          - 'gap-2' para reducir el espaciado entre grupos.
+          - 'justify-between' para mover los elementos a los extremos (iconos a la izq, políticas a la der).
+          - Se eliminó 'gap-2' para que 'justify-between' funcione correctamente en escritorio.
+          - 'items-center' asegura la alineación vertical.
+          - En móvil, se sigue usando 'flex-col' para apilar, y 'items-center' para centrarlos.
         */}
-        <div className="max-w-7xl mx-auto px-6 py-1 flex flex-col md:flex-row items-center justify-center gap-2">
+        <div className="max-w-7xl mx-auto px-6 py-1 flex flex-col md:flex-row items-center justify-center md:justify-between gap-2">
           
-          {/* Contenedor de Iconos Sociales */}
+          {/* Contenedor de Iconos Sociales (se mantiene a la izquierda/centrado en móvil) */}
           <div className="flex items-center gap-3">
             {/* Tamaño de Iconos: Se cambió de 'w-5 h-5' a 'w-4 h-4' */}
             <a href="https://www.facebook.com/plazatrujillohotel/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[#591117] transition-colors cursor-pointer">
@@ -39,10 +41,9 @@ export default function Footer() {
             </a>
           </div>
 
-          {/* Contenedor de Políticas */}
-          {/*
-            - Se cambió de 'text-sm' a 'text-xs' para el texto más pequeño.
-            - Se redujo el 'gap' en móvil a 'gap-0.5' y en escritorio a 'gap-2'.
+          {/* Contenedor de Políticas (se mueve a la derecha/centrado en móvil) */}
+          {/*             - Se mantiene 'flex-col' para móvil. 
+            - 'items-center' asegura que los botones estén centrados en móvil.
           */}
           <div className="flex flex-col md:flex-row items-center gap-0.5 md:gap-2 text-xs text-gray-600 text-center">
             <button type="button" onClick={() => openModal('privacy')} className="hover:text-[#591117] transition-colors cursor-pointer">

@@ -6,30 +6,18 @@ import AuthModal from './AuthModal'
 import InfoModal from './InfoModal'
 import ProfileModal from './ProfileModal'
 
-// Small inline icon components (SVG)
+// IMPORTANTE: Importamos tu nuevo logo aquí
+import logoPlaza from '../assets/logoo.png'
+
+// --- ICONOS ---
 const IconUser = ({ className = 'w-5 h-5' }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
     <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v1h20v-1c0-3.33-6.67-5-10-5z" />
   </svg>
 )
-const IconUserCircle = ({ className = 'w-8 h-8' }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 4a3 3 0 110 6 3 3 0 010-6zm0 12.2c-2.5 0-4.71-1-6.33-2.57.03-1.99 4-3.08 6.33-3.08 2.33 0 6.3 1.09 6.33 3.08A8.13 8.13 0 0112 18.2z" />
-  </svg>
-)
 const IconSignOut = ({ className = 'w-4 h-4' }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
     <path d="M16 13v-2H7V8l-5 4 5 4v-3zM20 3h-8v2h8v14h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" />
-  </svg>
-)
-const IconSignIn = ({ className = 'w-4 h-4' }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path d="M10 17l5-5-5-5v3H3v4h7v3zM20 3h-8v2h8v14h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" />
-  </svg>
-)
-const IconUserPlus = ({ className = 'w-4 h-4' }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path d="M15 14c2.7 0 8 1.34 8 4v1h-6v-1c0-1.03-1.91-2-4-2-2.09 0-4 .97-4 2v1H3v-1c0-2.66 5.3-4 8-4 1.73 0 3.15.51 4 1.2V14zm-3-9a3 3 0 100 6 3 3 0 000-6zm9 1h-2v2h-2v2h2v2h2v-2h2v-2h-2z" />
   </svg>
 )
 const IconPhone = ({ className = 'w-4 h-4' }) => (
@@ -42,19 +30,38 @@ const IconMail = ({ className = 'w-4 h-4' }) => (
     <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
   </svg>
 )
+const IconHome = ({ className = 'w-4 h-4' }) => (
+  <svg className={className} fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-5a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+  </svg>
+)
+const IconInfo = ({ className = 'w-4 h-4' }) => (
+  <svg className={className} fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+  </svg>
+)
+const IconBook = ({ className = 'w-4 h-4' }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.207 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.793 18 7.5 18s3.332.477 4.5 1.247m0-13C13.168 5.477 14.793 5 16.5 5s3.332.477 4.5 1.253v13C19.832 18.477 18.207 18 16.5 18s-3.332.477-4.5 1.247" />
+  </svg>
+)
 const IconLocation = ({ className = 'w-4 h-4' }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+  <svg className={className} fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+  </svg>
+)
+const IconStar = ({ className = 'w-4 h-4' }) => (
+  <svg className={className} fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
   </svg>
 )
 
 const navLinks = [
-  { key: 'pages.home.title', href: '/' },
-  { key: 'nav.info', href: '/info' },
+  { key: 'pages.home.title', href: '/', icon: IconHome },
+  { key: 'nav.info', href: '/info', icon: IconInfo },
 ]
 
 export default function Header() {
-  // Verificar si se debe abrir el modal de login al inicializar
   const shouldOpenLoginOnMount = () => {
     const shouldOpen = sessionStorage.getItem('openLoginModal') === 'true'
     if (shouldOpen) {
@@ -76,11 +83,18 @@ export default function Header() {
   const { user, isAuthenticated, logout } = useAuth()
   const navigate = useNavigate()
 
-  // Refs para detectar clics fuera de los dropdowns
   const userMenuRef = useRef(null)
   const currencyMenuRef = useRef(null)
 
-  // Cerrar dropdowns al hacer clic fuera
+  useEffect(() => {
+    if (open) {
+      document.body.classList.add('overflow-hidden')
+    } else {
+      document.body.classList.remove('overflow-hidden')
+    }
+    return () => document.body.classList.remove('overflow-hidden')
+  }, [open])
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
@@ -95,7 +109,6 @@ export default function Header() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  // Función para abrir un dropdown y cerrar los demás
   const toggleUserMenu = () => {
     setCurrencyMenuOpen(false)
     setUserMenuOpen(!userMenuOpen)
@@ -127,85 +140,74 @@ export default function Header() {
 
   return (
     <>
-      {/* ===== BARRA SUPERIOR DE INFORMACIÓN ===== */}
-      <div className="bg-[#f8f8f8] border-b border-gray-200 text-sm hidden md:block">
-        <div className="max-w-7xl mx-auto px-4">
+      {/* ===== BARRA SUPERIOR (Top Bar) ===== */}
+      <div className="bg-[#f8f9fa] border-b border-gray-100 text-[11px] uppercase tracking-wider font-semibold text-gray-500 hidden lg:block">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-10">
-            {/* Izquierda: Mensaje */}
-            <div className="flex items-center text-gray-600">
-              <span className="font-medium text-[#591117]">Página web oficial</span>
-              <span className="mx-2">·</span>
-              <span className="text-[#6B8E23]">Mejor precio garantizado</span>
+            {/* Izquierda */}
+            <div className="flex items-center gap-4">
+              <span className="text-[#591117] hover:opacity-80 transition-opacity cursor-default">
+                Sitio Oficial
+              </span>
+              <span className="w-px h-3 bg-gray-300"></span>
+              <span className="flex items-center gap-1.5 text-[#6B8E23]">
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/></svg>
+                Mejor Precio Garantizado
+              </span>
             </div>
 
-            {/* Derecha: Contacto e idioma */}
+            {/* Derecha */}
             <div className="flex items-center gap-6">
-              <a href="tel:+51992810971" className="group flex items-center gap-1.5 text-gray-600 hover:text-[#591117] transition-colors">
-                <IconPhone className="w-4 h-4" />
-                <span className="relative">
-                  +51 992810971
-                  <span className="absolute left-0 -bottom-1 w-0 h-px bg-[#591117] transition-all duration-300 ease-out group-hover:w-full"></span>
-                </span>
+              <a href="tel:+51992810971" className="hover:text-[#591117] transition-colors flex items-center gap-2">
+                <IconPhone className="w-3 h-3 mb-0.5" />
+                +51 992 810 971
               </a>
-              <a href="mailto:reservas@plazatrujillo.com" className="group flex items-center gap-1.5 text-gray-600 hover:text-[#591117] transition-colors">
-                <IconMail className="w-4 h-4" />
-                <span className="relative">
-                  reservas@plazatrujillo.com
-                  <span className="absolute left-0 -bottom-1 w-0 h-px bg-[#591117] transition-all duration-300 ease-out group-hover:w-full"></span>
-                </span>
-              </a>
-              <div ref={currencyMenuRef} className="relative flex items-center gap-1 text-gray-600">
-                <button
-                  type="button"
-                  onClick={toggleCurrencyMenu}
-                  className="flex items-center gap-1 hover:text-[#591117] transition-colors cursor-pointer"
-                >
-                  <span>{currentCurrency?.symbol}</span>
-                  <span>{currentCurrency?.code}</span>
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </button>
-
-                {/* Dropdown de monedas */}
-                {currencyMenuOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-44 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-100">
-                    {currencies.map((c) => (
-                      <button
-                        key={c.code}
-                        type="button"
-                        onClick={() => { setCurrency(c.code); setCurrencyMenuOpen(false) }}
-                        className={`flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer ${currency === c.code ? 'text-[#591117] font-medium' : 'text-gray-700'}`}
-                      >
-                        <span className="w-6">{c.symbol}</span>
-                        <span>{c.name}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
+              <div className="relative group">
+                <a href="mailto:reservas@plazatrujillo.com" className="hover:text-[#591117] transition-colors flex items-center gap-2">
+                  <IconMail className="w-3 h-3 mb-0.5" />
+                  RESERVAS
+                </a>
               </div>
               
-              {/* Selector de idioma */}
-              <div className="flex items-center border-l border-gray-300 pl-4">
-                {lang === 'en' ? (
-                  <button 
-                    type="button" 
-                    onClick={() => setLang('es')} 
-                    className="flex items-center gap-2 text-gray-600 hover:text-[#591117] transition-colors cursor-pointer"
+              <div className="flex items-center gap-4 border-l border-gray-300 pl-6 ml-2">
+                {/* Moneda */}
+                <div ref={currencyMenuRef} className="relative">
+                  <button
+                    type="button"
+                    onClick={toggleCurrencyMenu}
+                    className="flex items-center gap-1 hover:text-[#591117] transition-colors cursor-pointer"
                   >
-                    <span className="fi fi-es text-lg"></span>
-                    <span>Español</span>
+                    <span>{currentCurrency?.code}</span>
+                    <svg className={`w-3 h-3 transition-transform duration-300 ${currencyMenuOpen ? 'rotate-180' : ''}`} fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
                   </button>
-                ) : (
-                  <button 
-                    type="button" 
-                    onClick={() => setLang('en')} 
-                    className="flex items-center gap-2 text-gray-600 hover:text-[#591117] transition-colors cursor-pointer"
-                  >
-                    <span className="fi fi-us text-lg"></span>
-                    <span>English</span>
-                  </button>
-                )}
+
+                  {currencyMenuOpen && (
+                    <div className="absolute right-0 top-full mt-3 w-32 bg-white rounded-md shadow-2xl border border-gray-100 py-1 z-50">
+                      {currencies.map((c) => (
+                        <button
+                          key={c.code}
+                          type="button"
+                          onClick={() => { setCurrency(c.code); setCurrencyMenuOpen(false) }}
+                          className={`block w-full text-left px-4 py-2 text-[11px] hover:bg-gray-50 cursor-pointer ${currency === c.code ? 'text-[#591117] font-bold bg-gray-50' : 'text-gray-500'}`}
+                        >
+                          {c.code} - {c.symbol}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                {/* Idioma */}
+                <button 
+                  type="button" 
+                  onClick={() => setLang(lang === 'en' ? 'es' : 'en')} 
+                  className="hover:text-[#591117] transition-colors cursor-pointer flex items-center gap-2"
+                >
+                  <span className={`fi fi-${lang === 'en' ? 'us' : 'es'} rounded-sm shadow-sm`}></span>
+                  <span>{lang === 'en' ? 'EN' : 'ES'}</span>
+                </button>
               </div>
             </div>
           </div>
@@ -213,280 +215,337 @@ export default function Header() {
       </div>
 
       {/* ===== HEADER PRINCIPAL ===== */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo y dirección */}
-            <div className="flex items-center gap-4">
-              <Link to="/" className="flex items-center gap-3 cursor-pointer">
-                <img
-                  src="https://plazatrujillo.com/wp-content/uploads/2025/09/cropped-logo-plaza-trujillo-192x192.webp"
-                  alt="Plaza Trujillo Hotel"
-                  className="h-12 w-12 rounded-full border-2 border-gray-100"
-                />
-                <div className="hidden sm:flex items-center gap-2">
-                  <span className="font-semibold text-[#591117]">Hotel Plaza Trujillo</span>
-                  <span className="text-yellow-500 text-sm">★★★</span>
-                  <span className="text-gray-300">|</span>
-                  <div className="flex items-center gap-1 text-xs text-gray-500">
-                    <IconLocation className="w-3 h-3" />
-                    <span>Jr. Bolognesi 344 – Centro – Trujillo</span>
-                  </div>
-                </div>
-              </Link>
-            </div>
-
-            {/* Navegación Desktop y Botón de autenticación */}
-            <div className="hidden md:flex items-center gap-6">
-              {/* Links de navegación */}
-              <nav className="flex items-center gap-6">
-                {navLinks.map((l) => (
-                  l.href === '/info' ? (
-                    <button
-                      key={l.key}
-                      onClick={() => setInfoModalOpen(true)}
-                      className="text-gray-700 hover:text-[#591117] font-medium transition-colors cursor-pointer"
-                    >
-                      {t(l.key)}
-                    </button>
-                  ) : (
-                    <NavLink
-                      key={l.key}
-                      to={l.href}
-                      className={({ isActive }) =>
-                        `text-gray-700 hover:text-[#591117] font-medium transition-colors ${isActive ? 'text-[#591117]' : ''}`
-                      }
-                    >
-                      {t(l.key)}
-                    </NavLink>
-                  )
-                ))}
-              </nav>
-
-              {/* Botón de autenticación */}
-              {isAuthenticated ? (
-                <div ref={userMenuRef} className="relative">
-                  <button
-                    onClick={toggleUserMenu}
-                    className="flex items-center gap-2 text-gray-700 hover:text-gray-900 focus:outline-none cursor-pointer"
-                  >
-                    {user?.photoUrl ? (
-                      <img 
-                        src={user.photoUrl} 
-                        alt="Avatar" 
-                        className="w-8 h-8 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-8 h-8 rounded-full bg-[#591117] flex items-center justify-center text-white font-semibold text-sm">
-                        {user?.firstName?.charAt(0)?.toUpperCase()}{user?.lastName?.charAt(0)?.toUpperCase()}
-                      </div>
-                    )}
-                    <span className="font-medium">{user?.firstName} {user?.lastName}</span>
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                  </button>
-
-                  {userMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                      <button
-                        onClick={() => { setProfileModalSection('reservations'); setProfileModalOpen(true); setUserMenuOpen(false) }}
-                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                      >
-                        <svg className="mr-3 w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm-8 4H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z" />
-                        </svg>
-                        Mis Reservas
-                      </button>
-                      <button
-                        onClick={() => { setProfileModalSection('profile'); setProfileModalOpen(true); setUserMenuOpen(false) }}
-                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                      >
-                        <IconUser className="mr-3 w-4 h-4" />
-                        Mi perfil
-                      </button>
-                      <button
-                        onClick={() => { handleLogout(); setUserMenuOpen(false) }}
-                        className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100 cursor-pointer"
-                      >
-                        <IconSignOut className="mr-3 w-4 h-4" />
-                        Cerrar sesión
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ) : (
+      <header className="bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] transition-all duration-300 h-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+          <div className="flex items-center justify-between h-full">
+            
+            {/* LADO IZQUIERDO: Botón Hamburguesa (Móvil) + Logo 
+                CORRECCIÓN: Se agregó 'lg:-ml-8' para mover el logo más a la izquierda en PC 
+            */}
+            <div className="flex items-center gap-4 flex-shrink-0 lg:-ml-8">
+                
+                {/* 1. Botón Hamburguesa (SOLO MÓVIL) */}
                 <button
-                  onClick={() => openAuthModal('login')}
-                  className="bg-[#591117] hover:bg-[#7a171f] text-white px-6 py-2.5 rounded-full font-medium transition-colors cursor-pointer"
+                    type="button"
+                    className="lg:hidden p-2 -ml-2 rounded-full text-gray-600 hover:bg-gray-50 hover:text-[#591117] transition-all focus:outline-none"
+                    onClick={() => setOpen(!open)}
+                    aria-label="Menú"
                 >
-                  Iniciar sesión
+                    <svg className="h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        {open ? (
+                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+                        ) : (
+                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
+                        )}
+                    </svg>
                 </button>
-              )}
+
+                {/* 2. Logo Nuevo (Rectangular) - A la izquierda */}
+                <Link to="/" className="flex items-center group">
+                    <img
+                        src={logoPlaza}
+                        alt="Plaza Trujillo Hotel"
+                        className="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                    />
+                </Link>
             </div>
 
-            {/* Botón hamburguesa móvil */}
-            <button
-              type="button"
-              className="md:hidden inline-flex items-center justify-center p-2 rounded text-[#591117] hover:bg-gray-100"
-              onClick={() => setOpen((v) => !v)}
-            >
-              <span className="sr-only">{t('nav.open_menu')}</span>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
-                <path d="M3.75 6.75h16.5v1.5H3.75zM3.75 11.25h16.5v1.5H3.75zM3.75 15.75h16.5v1.5H3.75z" />
-              </svg>
-            </button>
+            {/* LADO DERECHO: Navegación + Estrellas/Dirección + Auth */}
+            <div className="flex items-center gap-6">
+                
+                {/* Navegación Desktop */}
+                <div className="hidden lg:flex items-center gap-6">
+                    <nav className="flex items-center gap-6">
+                        {navLinks.map((l) => (
+                        l.href === '/info' ? (
+                            <button
+                            key={l.key}
+                            onClick={() => setInfoModalOpen(true)}
+                            className="text-gray-600 hover:text-[#591117] text-sm font-medium tracking-wide transition-all hover:-translate-y-0.5 py-2 cursor-pointer relative group"
+                            >
+                            {t(l.key)}
+                            <span className="absolute bottom-1 left-0 w-0 h-px bg-[#591117] transition-all duration-300 group-hover:w-full"></span>
+                            </button>
+                        ) : (
+                            <NavLink
+                            key={l.key}
+                            to={l.href}
+                            className={({ isActive }) =>
+                                `text-sm font-medium tracking-wide transition-all py-2 relative group
+                                ${isActive ? 'text-[#591117]' : 'text-gray-600 hover:text-[#591117]'}`
+                            }
+                            >
+                            {({ isActive }) => (
+                                <>
+                                {t(l.key)}
+                                <span className={`absolute bottom-0 left-0 h-0.5 bg-[#591117] transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+                                </>
+                            )}
+                            </NavLink>
+                        )
+                        ))}
+                    </nav>
+                </div>
+
+                {/* === NUEVO BLOQUE: Estrellas y Dirección (Desktop) === */}
+                <div className="hidden xl:flex flex-col items-end border-r border-gray-200 pr-6 mr-2">
+                    {/* Estrellas */}
+                    <div className="flex gap-0.5 text-yellow-400 mb-0.5">
+                        <IconStar className="w-4 h-4" />
+                        <IconStar className="w-4 h-4" />
+                        <IconStar className="w-4 h-4" />
+                    </div>
+                    {/* Dirección */}
+                    <div className="flex items-center gap-1.5 text-gray-500 text-xs">
+                        <IconLocation className="w-3.5 h-3.5 text-gray-400" />
+                        <span>Jr. Bolognesi 344 – Centro – Trujillo</span>
+                    </div>
+                </div>
+
+                {/* Botón Auth */}
+                {isAuthenticated ? (
+                    <div ref={userMenuRef} className="relative">
+                    <button
+                        onClick={toggleUserMenu}
+                        className="flex items-center gap-3 pl-1 pr-3 py-1 rounded-full border border-gray-100 hover:border-gray-300 hover:shadow-md transition-all cursor-pointer group bg-white"
+                    >
+                        {user?.photoUrl ? (
+                        <img src={user.photoUrl} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />
+                        ) : (
+                        <div className="w-8 h-8 rounded-full bg-[#591117] text-white flex items-center justify-center text-xs font-bold">
+                            {user?.firstName?.charAt(0)?.toUpperCase()}{user?.lastName?.charAt(0)?.toUpperCase()}
+                        </div>
+                        )}
+                        <span className="text-sm font-medium text-gray-700 group-hover:text-[#591117] max-w-[100px] truncate hidden sm:block">
+                        {user?.firstName}
+                        </span>
+                        <svg className={`w-4 h-4 text-gray-400 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    {/* Dropdown Desktop */}
+                    {userMenuOpen && (
+                        <div className="absolute right-0 mt-4 w-64 bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100 py-2 z-50 animate-fade-in-up">
+                        <div className="px-5 py-4 border-b border-gray-50 bg-gradient-to-r from-gray-50 to-white">
+                            <p className="text-sm font-bold text-gray-900">{user?.firstName} {user?.lastName}</p>
+                            <p className="text-xs text-gray-500 truncate mt-0.5">{user?.email}</p>
+                        </div>
+                        <div className="p-1">
+                            <button
+                                onClick={() => { setProfileModalSection('reservations'); setProfileModalOpen(true); setUserMenuOpen(false) }}
+                                className="flex items-center w-full px-4 py-2.5 text-sm text-gray-600 hover:bg-[#591117]/5 hover:text-[#591117] rounded-lg transition-colors"
+                            >
+                                <span className="w-8"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg></span>
+                                Mis Reservas
+                            </button>
+                            <button
+                                onClick={() => { setProfileModalSection('profile'); setProfileModalOpen(true); setUserMenuOpen(false) }}
+                                className="flex items-center w-full px-4 py-2.5 text-sm text-gray-600 hover:bg-[#591117]/5 hover:text-[#591117] rounded-lg transition-colors"
+                            >
+                                <span className="w-8"><IconUser className="w-4 h-4" /></span>
+                                Mi Perfil
+                            </button>
+                        </div>
+                        <div className="border-t border-gray-100 my-1 mx-4"></div>
+                        <div className="p-1">
+                            <button
+                                onClick={() => { handleLogout(); setUserMenuOpen(false) }}
+                                className="flex items-center w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            >
+                                <span className="w-8"><IconSignOut className="w-4 h-4" /></span>
+                                Cerrar Sesión
+                            </button>
+                        </div>
+                        </div>
+                    )}
+                    </div>
+                ) : (
+                    <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => openAuthModal('login')}
+                        className="text-gray-600 hover:text-[#591117] text-sm font-medium transition-colors hidden sm:block"
+                    >
+                        Ingresar
+                    </button>
+                    <button
+                        onClick={() => openAuthModal('login')} 
+                        className="bg-[#591117] hover:bg-[#4a0d12] text-white text-sm px-5 py-2.5 rounded-full font-medium transition-all shadow-lg hover:shadow-[#591117]/30 hover:-translate-y-0.5 active:translate-y-0"
+                    >
+                        Reservar
+                    </button>
+                    </div>
+                )}
+            </div>
           </div>
         </div>
-
-        {/* Menú móvil */}
-        {open && (
-          <div className="md:hidden border-t border-gray-200 bg-white">
-            <div className="px-4 py-4 space-y-3">
-              {navLinks.map((l) => (
-                l.href === '/info' ? (
-                  <button
-                    key={l.key}
-                    onClick={() => { setInfoModalOpen(true); setOpen(false) }}
-                    className="block py-2 text-gray-700 hover:text-[#591117] cursor-pointer w-full text-left"
-                  >
-                    {t(l.key)}
-                  </button>
-                ) : (
-                  <NavLink 
-                    key={l.key} 
-                    to={l.href} 
-                    className={({ isActive }) =>
-                      `block py-2 text-gray-700 hover:text-[#591117] ${isActive ? 'text-[#591117] font-medium' : ''}`
-                    }
-                    onClick={() => setOpen(false)}
-                  >
-                    {t(l.key)}
-                  </NavLink>
-                )
-              ))}
-
-              {/* Información de contacto móvil */}
-              <div className="pt-3 border-t border-gray-200 space-y-2">
-                <a href="tel:+51992810971" className="flex items-center gap-2 text-sm text-gray-600">
-                  <IconPhone className="w-4 h-4" />
-                  <span>+51 992810971</span>
-                </a>
-                <a href="mailto:reservas@plazatrujillo.com" className="flex items-center gap-2 text-sm text-gray-600">
-                  <IconMail className="w-4 h-4" />
-                  <span>reservas@plazatrujillo.com</span>
-                </a>
-              </div>
-
-              {/* Selector de idioma móvil */}
-              <div className="pt-3 border-t border-gray-200">
-                {lang === 'en' ? (
-                  <button 
-                    type="button" 
-                    onClick={() => { setLang('es'); setOpen(false) }} 
-                    className="flex items-center gap-2 text-gray-600"
-                  >
-                    <span className="fi fi-es text-lg"></span>
-                    <span>Cambiar a Español</span>
-                  </button>
-                ) : (
-                  <button 
-                    type="button" 
-                    onClick={() => { setLang('en'); setOpen(false) }} 
-                    className="flex items-center gap-2 text-gray-600"
-                  >
-                    <span className="fi fi-us text-lg"></span>
-                    <span>Switch to English</span>
-                  </button>
-                )}
-              </div>
-
-              {/* Autenticación móvil */}
-              <div className="pt-3 border-t border-gray-200">
-                {isAuthenticated ? (
-                  <>
-                    <div className="flex items-center gap-3 pb-3 mb-2 border-b border-gray-100">
-                      {user?.photoUrl ? (
-                        <img src={user.photoUrl} alt="Avatar" className="w-10 h-10 rounded-full object-cover" />
-                      ) : (
-                        <div className="w-10 h-10 rounded-full bg-[#591117] flex items-center justify-center text-white font-semibold">
-                          {user?.firstName?.charAt(0)?.toUpperCase()}{user?.lastName?.charAt(0)?.toUpperCase()}
-                        </div>
-                      )}
-                      <div>
-                        <p className="font-medium text-gray-800">{user?.firstName} {user?.lastName}</p>
-                        <p className="text-sm text-gray-500">{user?.email}</p>
-                      </div>
-                    </div>
-                    <button 
-                      onClick={() => { setProfileModalSection('reservations'); setProfileModalOpen(true); setOpen(false) }}
-                      className="flex items-center py-2 text-gray-700 hover:text-[#591117] w-full"
-                    >
-                      <svg className="mr-3 w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm-8 4H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z" />
-                      </svg>
-                      Mis Reservas
-                    </button>
-                    <button 
-                      onClick={() => { setProfileModalSection('profile'); setProfileModalOpen(true); setOpen(false) }}
-                      className="flex items-center py-2 text-gray-700 hover:text-[#591117] w-full"
-                    >
-                      <IconUser className="mr-3 w-4 h-4" />
-                      Mi perfil
-                    </button>
-                    <button 
-                      onClick={() => { handleLogout(); setOpen(false) }} 
-                      className="flex items-center py-2 text-red-600"
-                    >
-                      <IconSignOut className="mr-3 w-4 h-4" />
-                      Cerrar sesión
-                    </button>
-                  </>
-                ) : (
-                  <div className="flex flex-col gap-2">
-                    <button
-                      onClick={() => { setOpen(false); openAuthModal('login') }}
-                      className="bg-[#591117] hover:bg-[#7a171f] text-white px-4 py-2.5 rounded-full font-medium text-center transition-colors"
-                    >
-                      Iniciar sesión
-                    </button>
-                    <button
-                      onClick={() => { setOpen(false); openAuthModal('register') }}
-                      className="border border-[#591117] text-[#591117] hover:bg-[#591117] hover:text-white px-4 py-2.5 rounded-full font-medium text-center transition-colors"
-                    >
-                      Registrarse
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
       </header>
 
-      {/* Modal de autenticación */}
-      <AuthModal 
-        isOpen={authModalOpen} 
-        onClose={() => setAuthModalOpen(false)}
-        initialView={authModalView}
+      {/* ===== SIDEBAR / DRAWER IZQUIERDO ===== */}
+      
+      {/* 1. Backdrop */}
+      <div 
+        className={`fixed inset-0 top-20 bg-black/50 backdrop-blur-sm z-30 lg:hidden transition-opacity duration-500 ease-in-out ${
+          open ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
+        }`}
+        onClick={() => setOpen(false)}
       />
 
-      {/* Modal de información */}
-      <InfoModal 
-        isOpen={infoModalOpen} 
-        onClose={() => setInfoModalOpen(false)}
-      />
+      {/* 2. Panel Lateral - AQUI SE QUITA LA BARRA DE SCROLL VISUALMENTE */}
+      <aside 
+        className={`fixed top-20 left-0 z-40 h-[calc(100vh-5rem)] w-full max-w-xs bg-white shadow-2xl transform transition-transform duration-500 ease-in-out lg:hidden flex flex-col overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] ${
+          open ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        {/* Cuerpo Sidebar - Navegación */}
+        <div className="flex-1 px-4 py-6">
+          
+          <div className="mb-4 px-2">
+             <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+               MENÚ
+             </span>
+          </div>
 
-      {/* Modal de perfil */}
-      <ProfileModal 
-        isOpen={profileModalOpen} 
-        onClose={() => setProfileModalOpen(false)}
-        onLogout={() => { setProfileModalOpen(false); handleLogout() }}
-        initialSection={profileModalSection}
-      />
+          <div className="mb-6">
+            <button
+              onClick={() => { openAuthModal('login'); setOpen(false) }} 
+              className="w-full bg-[#591117] hover:bg-[#4a0d12] text-white text-lg px-5 py-3 rounded-xl font-bold transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+            >
+              <IconBook className="w-5 h-5"/>
+              RESERVAR AHORA
+            </button>
+          </div>
 
-      {/* Spacer para contenido */}
-      <div aria-hidden className="h-0 md:h-0"></div>
+          <nav className="space-y-1">
+            {navLinks.map((l) => {
+              const NavIcon = l.icon;
+              return l.href === '/info' ? (
+                <button
+                  key={l.key}
+                  onClick={() => { setInfoModalOpen(true); setOpen(false) }}
+                  className="w-full text-left py-3 px-4 rounded-xl text-base text-gray-700 hover:text-[#591117] hover:bg-[#591117]/10 transition-all font-semibold flex items-center gap-3 group"
+                >
+                  <NavIcon className="w-5 h-5 text-gray-500 group-hover:text-[#591117] transition-colors" />
+                  {t(l.key)}
+                </button>
+              ) : (
+                <NavLink 
+                  key={l.key} 
+                  to={l.href} 
+                  className={({ isActive }) =>
+                    `w-full flex items-center py-3 px-4 rounded-xl text-base transition-all font-semibold gap-3 ${
+                      isActive ? 'text-[#591117] bg-[#591117]/10' : 'text-gray-700 hover:text-[#591117] hover:bg-[#591117]/5 group'
+                    }`
+                  }
+                  onClick={() => setOpen(false)}
+                >
+                  <NavIcon className={`w-5 h-5 ${window.location.pathname === l.href ? 'text-[#591117]' : 'text-gray-500 group-hover:text-[#591117]'} transition-colors`} />
+                  {t(l.key)}
+                </NavLink>
+              )
+            })}
+
+            {/* Agregado info de dirección en móvil también */}
+            <div className="mt-4 px-4 py-3 bg-gray-50 rounded-xl border border-gray-100">
+               <div className="flex gap-0.5 text-yellow-400 mb-1 justify-center">
+                   <IconStar className="w-4 h-4" />
+                   <IconStar className="w-4 h-4" />
+                   <IconStar className="w-4 h-4" />
+               </div>
+               <div className="flex items-center justify-center gap-1.5 text-gray-500 text-xs text-center">
+                   <IconLocation className="w-3.5 h-3.5 text-gray-400" />
+                   <span>Jr. Bolognesi 344 – Centro – Trujillo</span>
+               </div>
+            </div>
+
+            {/* Enlaces de perfil / autenticación */}
+            {isAuthenticated ? (
+              <>
+                <div className="my-3 border-t border-gray-100 mx-4"></div>
+                <button
+                  onClick={() => { setProfileModalSection('reservations'); setProfileModalOpen(true); setOpen(false) }}
+                  className="w-full text-left py-3 px-4 rounded-xl text-base text-gray-700 hover:text-[#591117] hover:bg-[#591117]/5 transition-all font-medium flex items-center gap-3 group"
+                >
+                  <IconBook className="w-5 h-5 text-gray-500 group-hover:text-[#591117]"/>
+                  Mis Reservas
+                </button>
+                <button
+                  onClick={() => { setProfileModalSection('profile'); setProfileModalOpen(true); setOpen(false) }}
+                  className="w-full text-left py-3 px-4 rounded-xl text-base text-gray-700 hover:text-[#591117] hover:bg-[#591117]/5 transition-all font-medium flex items-center gap-3 group"
+                >
+                  <IconUser className="w-5 h-5 text-gray-500 group-hover:text-[#591117]"/>
+                  Mi Perfil
+                </button>
+                <button
+                  onClick={() => { handleLogout(); setOpen(false) }}
+                  className="w-full text-left py-3 px-4 rounded-xl text-base text-red-600 hover:bg-red-50 transition-all font-medium flex items-center gap-3 group mt-2"
+                >
+                  <IconSignOut className="w-5 h-5 text-red-500 group-hover:text-red-700"/>
+                  Cerrar Sesión
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => { openAuthModal('login'); setOpen(false) }}
+                className="w-full text-left py-3 px-4 rounded-xl text-base text-gray-700 hover:text-[#591117] hover:bg-[#591117]/5 transition-all font-medium flex items-center gap-3 group mt-2"
+              >
+                <IconUser className="w-5 h-5 text-gray-500 group-hover:text-[#591117]"/>
+                Ingresar / Registrarse
+              </button>
+            )}
+
+          </nav>
+          
+          <div className="my-8 border-t border-gray-100"></div>
+
+          <p className="text-xs uppercase tracking-widest font-semibold text-gray-400 px-2 mt-4 mb-2 border-b border-gray-100 pb-1">Configuración y Contacto</p>
+
+          {/* Configuración */}
+          <div className="grid grid-cols-2 gap-3 mb-6">
+             {/* Idioma */}
+             <button 
+                onClick={() => { setLang(lang === 'en' ? 'es' : 'en'); setOpen(false) }} 
+                className="flex flex-col items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 text-gray-600 hover:border-[#591117] hover:text-[#591117] hover:shadow-sm transition-all bg-gray-50/50"
+              >
+                <span className={`fi fi-${lang === 'en' ? 'us' : 'es'} text-xl`}></span>
+                <span className="text-xs font-bold tracking-wider">{lang === 'en' ? 'ENGLISH' : 'ESPAÑOL'}</span>
+              </button>
+              
+              {/* Moneda */}
+              <div className="relative">
+                <select 
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value)}
+                  className="w-full h-full appearance-none rounded-xl border border-gray-200 text-center bg-gray-50/50 text-gray-600 font-bold text-xs pt-7 pb-3 focus:outline-none focus:border-[#591117] hover:border-gray-300 transition-colors cursor-pointer"
+                >
+                  {currencies.map(c => <option key={c.code} value={c.code}>{c.symbol} {c.code}</option>)}
+                </select>
+                <div className="pointer-events-none absolute top-2 left-0 right-0 flex items-center justify-center text-xs font-semibold text-gray-400">
+                  <span>MONEDA</span>
+                </div>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+              </div>
+          </div>
+
+          {/* Contacto */}
+          <div className="space-y-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+            <a href="tel:+51992810971" className="flex items-center gap-4 text-gray-700 hover:text-[#591117] transition-colors group">
+              <IconPhone className="w-5 h-5 text-[#6B8E23] group-hover:text-[#591117] transition-colors" />
+              <span className="font-semibold text-sm">+51 992 810 971</span>
+            </a>
+            <a href="mailto:reservas@plazatrujillo.com" className="flex items-center gap-4 text-gray-700 hover:text-[#591117] transition-colors group">
+              <IconMail className="w-5 h-5 text-[#6B8E23] group-hover:text-[#591117] transition-colors" />
+              <span className="font-semibold text-sm">reservas@plazatrujillo.com</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} initialView={authModalView} />
+      <InfoModal isOpen={infoModalOpen} onClose={() => setInfoModalOpen(false)} />
+      <ProfileModal isOpen={profileModalOpen} onClose={() => setProfileModalOpen(false)} onLogout={() => { setProfileModalOpen(false); handleLogout() }} initialSection={profileModalSection} />
     </>
   )
 }

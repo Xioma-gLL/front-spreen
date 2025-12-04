@@ -4,6 +4,9 @@ import { useI18n } from '../context/LanguageContext'
 import { FcGoogle } from 'react-icons/fc'
 import { IoClose, IoEye, IoEyeOff } from 'react-icons/io5'
 
+// Asegúrate de que la ruta sea correcta
+import localLogo from '../assets/logoo.png'
+
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api'
 
 // ===== COMPONENTE PRINCIPAL DEL MODAL =====
@@ -14,7 +17,7 @@ export default function AuthModal({ isOpen, onClose, initialView = 'login' }) {
 
   useEffect(() => {
     if (isOpen) {
-      setCurrentView('login') // Siempre mostrar login al abrir
+      setCurrentView('login')
       setIsVisible(true)
       setTimeout(() => setIsAnimating(true), 10)
     } else {
@@ -52,52 +55,85 @@ export default function AuthModal({ isOpen, onClose, initialView = 'login' }) {
   if (!isVisible) return null
 
   return (
-    <div 
-      className={`fixed inset-0 z-100 flex items-center justify-center transition-all duration-300 ${
-        isAnimating ? 'bg-black/50' : 'bg-transparent'
-      }`}
-      onClick={(e) => e.target === e.currentTarget && onClose()}
-    >
-      <div 
-        className={`relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto transition-all duration-300 transform scrollbar-hide ${
-          isAnimating 
-            ? 'opacity-100 scale-100 translate-y-0' 
-            : 'opacity-0 scale-95 translate-y-4'
-        }`}
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
-        {/* Botón cerrar */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors z-10 cursor-pointer"
-        >
-          <IoClose className="w-5 h-5" />
-        </button>
+    <>
+      {/* Estilos para ocultar scrollbar globalmente en este componente */}
+      <style>{`
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+      `}</style>
 
-        {/* Contenido según la vista */}
-        {currentView === 'login' && (
-          <LoginContent 
-            onChangeView={handleViewChange} 
-            onSuccess={handleSuccess}
-          />
-        )}
-        {currentView === 'register' && (
-          <RegisterContent 
-            onChangeView={handleViewChange} 
-            onSuccess={handleSuccess}
-          />
-        )}
-        {currentView === 'forgot' && (
-          <ForgotPasswordContent 
-            onChangeView={handleViewChange}
-          />
-        )}
+      <div 
+        className={`fixed inset-0 z-[100] flex items-center justify-center transition-all duration-300 ${
+          isAnimating ? 'bg-black/60 backdrop-blur-sm' : 'bg-transparent'
+        }`}
+        onClick={(e) => e.target === e.currentTarget && onClose()}
+      >
+        <div 
+          className={`relative bg-white w-full h-full md:h-[90vh] md:w-[95vw] md:max-w-7xl md:rounded-3xl shadow-2xl overflow-hidden flex transition-all duration-500 transform ${
+            isAnimating 
+              ? 'opacity-100 scale-100 translate-y-0' 
+              : 'opacity-0 scale-95 translate-y-8'
+          }`}
+        >
+          {/* Botón cerrar flotante */}
+          <button
+            onClick={onClose}
+            className="absolute top-6 right-6 p-2 bg-white/80 backdrop-blur hover:bg-white text-gray-500 hover:text-[#591117] rounded-full shadow-md transition-all z-50 cursor-pointer border border-gray-100 group"
+          >
+            <IoClose className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
+          </button>
+
+          {/* LADO IZQUIERDO: Imagen Decorativa */}
+          <div className="hidden lg:flex lg:w-1/2 relative bg-[#591117]">
+            <img 
+              src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
+              alt="Hotel Atmosphere" 
+              className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#591117] via-transparent to-transparent opacity-90"></div>
+            
+            <div className="relative z-10 flex flex-col justify-end p-16 text-white h-full">
+              <h1 className="text-5xl font-bold mb-6 leading-tight">Experiencias inolvidables te esperan.</h1>
+              <p className="text-xl text-gray-200 font-light">Accede a tu cuenta para gestionar tus reservas y disfrutar de beneficios exclusivos.</p>
+            </div>
+          </div>
+
+          {/* LADO DERECHO: Formulario con Scroll Invisible */}
+          <div className="w-full lg:w-1/2 h-full overflow-y-auto bg-white scrollbar-hide">
+            <div className="min-h-full flex items-center justify-center p-6 md:p-12 lg:p-16">
+              <div className="w-full max-w-md mx-auto">
+                {currentView === 'login' && (
+                  <LoginContent 
+                    onChangeView={handleViewChange} 
+                    onSuccess={handleSuccess}
+                  />
+                )}
+                {currentView === 'register' && (
+                  <RegisterContent 
+                    onChangeView={handleViewChange} 
+                    onSuccess={handleSuccess}
+                  />
+                )}
+                {currentView === 'forgot' && (
+                  <ForgotPasswordContent 
+                    onChangeView={handleViewChange}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 
-// ===== CONTENIDO DE LOGIN (igual que LoginPage) =====
+// ===== CONTENIDO DE LOGIN =====
 function LoginContent({ onChangeView, onSuccess }) {
   const [formData, setFormData] = useState({
     email: '',
@@ -142,149 +178,139 @@ function LoginContent({ onChangeView, onSuccess }) {
   }
 
   return (
-    <div className="p-8 space-y-6">
-      {/* Logo y título */}
+    <div className="space-y-8 animate-fadeIn">
+      {/* Header con Logo Limpio */}
       <div className="text-center">
         <img
-          src="https://plazatrujillo.com/wp-content/uploads/2025/09/cropped-logo-plaza-trujillo-192x192.webp"
-          alt="Hotel Plaza Trujillo"
-          className="mx-auto h-16 w-16 rounded-full object-cover mb-4 shadow-lg"
+          src={localLogo}
+          alt="Logo"
+          className="mx-auto h-16 w-auto object-contain mb-6 hover:scale-105 transition-transform duration-300"
         />
-        <h2 className="text-3xl font-bold text-[#591117] mb-2">
+        <h2 className="text-3xl font-bold text-[#591117] tracking-tight">
           Bienvenido de vuelta
         </h2>
-        <p className="text-gray-600">
-          Inicia sesión en tu cuenta para continuar
+        <p className="mt-2 text-gray-500 font-medium">
+          Ingresa tus datos para continuar
         </p>
       </div>
 
-      {/* Formulario de login */}
-      <div className="space-y-6">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Campo de email */}
-          <div>
-            <label htmlFor="modal-email" className="block text-sm font-medium text-gray-700 mb-2">
-              Correo electrónico
-            </label>
-            <input
-              id="modal-email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={formData.email}
-              onChange={handleInputChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F26A4B] focus:border-transparent transition-all duration-200"
-              placeholder="tu@email.com"
-            />
-          </div>
-
-          {/* Campo de contraseña */}
-          <div>
-            <label htmlFor="modal-password" className="block text-sm font-medium text-gray-700 mb-2">
-              Contraseña
-            </label>
-            <div className="relative">
-              <input
-                id="modal-password"
-                name="password"
-                type={showPassword ? 'text' : 'password'}
-                autoComplete="current-password"
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-5">
+            <div>
+                <label htmlFor="modal-email" className="block text-sm font-semibold text-gray-700 mb-2 ml-1">
+                Correo electrónico
+                </label>
+                <input
+                id="modal-email"
+                name="email"
+                type="email"
+                autoComplete="email"
                 required
-                value={formData.password}
+                value={formData.email}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F26A4B] focus:border-transparent transition-all duration-200"
-                placeholder="••••••••"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer"
-              >
-                {showPassword ? <IoEyeOff className="w-5 h-5 text-gray-400" /> : <IoEye className="w-5 h-5 text-gray-400" />}
-              </button>
+                className="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#F26A4B]/50 focus:border-[#F26A4B] outline-none transition-all duration-200 font-medium"
+                placeholder="ejemplo@correo.com"
+                />
             </div>
-          </div>
 
-          {/* Opciones adicionales */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="modal-rememberMe"
-                name="rememberMe"
-                type="checkbox"
-                checked={formData.rememberMe}
-                onChange={handleInputChange}
-                className="h-4 w-4 text-[#F21905] focus:ring-[#F26A4B] border-gray-300 rounded cursor-pointer"
-              />
-              <label htmlFor="modal-rememberMe" className="ml-2 block text-sm text-gray-700 cursor-pointer">
-                Recuérdame
-              </label>
+            <div>
+                <div className="flex justify-between items-center mb-2 ml-1">
+                    <label htmlFor="modal-password" class="block text-sm font-semibold text-gray-700">
+                    Contraseña
+                    </label>
+                    <button
+                        type="button"
+                        onClick={() => onChangeView('forgot')}
+                        className="text-sm font-semibold text-[#F26A4B] hover:text-[#D94F30] transition-colors"
+                    >
+                        ¿Olvidaste tu contraseña?
+                    </button>
+                </div>
+                <div className="relative group">
+                <input
+                    id="modal-password"
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    autoComplete="current-password"
+                    required
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className="w-full px-5 py-3.5 pr-12 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#F26A4B]/50 focus:border-[#F26A4B] outline-none transition-all duration-200 font-medium"
+                    placeholder="••••••••"
+                />
+                <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 group-focus-within:text-[#F26A4B] transition-colors cursor-pointer"
+                >
+                    {showPassword ? <IoEyeOff className="w-5 h-5" /> : <IoEye className="w-5 h-5" />}
+                </button>
+                </div>
             </div>
-            <button
-              type="button"
-              onClick={() => onChangeView('forgot')}
-              className="text-sm text-[#591117] hover:text-[#F26A4B] transition-colors cursor-pointer"
-            >
-              ¿Olvidaste tu contraseña?
-            </button>
-          </div>
-
-          {/* Botón de login */}
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-gradient-to-r from-[#591117] to-[#F26A4B] text-white py-3 px-4 rounded-lg font-medium hover:from-[#F21905] hover:to-[#8C0808] focus:outline-none focus:ring-2 focus:ring-[#F26A4B] focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-          >
-            {isLoading ? (
-              <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                Iniciando sesión...
-              </div>
-            ) : (
-              'Iniciar sesión'
-            )}
-          </button>
-        </form>
-
-        {/* Divisor */}
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300" />
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">O continúa con</span>
-          </div>
         </div>
 
-        {/* Botón de login con Google */}
+        <div className="flex items-center">
+            <input
+            id="modal-rememberMe"
+            name="rememberMe"
+            type="checkbox"
+            checked={formData.rememberMe}
+            onChange={handleInputChange}
+            className="h-5 w-5 text-[#F26A4B] focus:ring-[#F26A4B] border-gray-300 rounded cursor-pointer transition-all"
+            />
+            <label htmlFor="modal-rememberMe" className="ml-2 block text-sm text-gray-600 cursor-pointer select-none">
+            Mantener sesión iniciada
+            </label>
+        </div>
+
         <button
-          onClick={() => handleSocialLogin('google')}
-          className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-lg hover:bg-[#FFF7F7] transition-colors duration-200 cursor-pointer"
+            type="submit"
+            disabled={isLoading}
+            className="w-full bg-gradient-to-r from-[#591117] to-[#8C0808] text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-[#591117]/30 hover:shadow-[#591117]/50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
         >
-          <FcGoogle className="w-5 h-5" />
-          <span className="text-gray-600 font-medium">Google</span>
+            {isLoading ? (
+            <div className="flex items-center justify-center gap-2">
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <span>Entrando...</span>
+            </div>
+            ) : (
+            'Iniciar Sesión'
+            )}
         </button>
+      </form>
+
+      <div className="relative py-2">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-200" />
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-4 bg-white text-gray-500 font-medium">O continúa con</span>
+        </div>
       </div>
 
-      {/* Enlace a registro */}
-      <div className="text-center">
-        <p className="text-gray-600">
-          ¿No tienes una cuenta?{' '}
-          <button
-            type="button"
-            onClick={() => onChangeView('register')}
-            className="font-medium text-[#591117] hover:text-[#F26A4B] transition-colors cursor-pointer"
-          >
-            Regístrate gratis
-          </button>
-        </p>
-      </div>
+      <button
+        onClick={() => handleSocialLogin('google')}
+        className="w-full flex items-center justify-center gap-3 py-3.5 border-2 border-gray-100 rounded-xl hover:bg-gray-50 hover:border-gray-200 text-gray-700 font-semibold transition-all duration-200 group cursor-pointer"
+      >
+        <FcGoogle className="w-6 h-6 group-hover:scale-110 transition-transform" />
+        <span>Google</span>
+      </button>
+
+      <p className="text-center text-gray-600">
+        ¿No tienes una cuenta?{' '}
+        <button
+          type="button"
+          onClick={() => onChangeView('register')}
+          className="font-bold text-[#F26A4B] hover:text-[#D94F30] hover:underline transition-all"
+        >
+          Regístrate gratis
+        </button>
+      </p>
     </div>
   )
 }
 
-// ===== CONTENIDO DE REGISTRO (igual que RegisterPage) =====
+// ===== CONTENIDO DE REGISTRO =====
 function RegisterContent({ onChangeView, onSuccess }) {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -305,28 +331,12 @@ function RegisterContent({ onChangeView, onSuccess }) {
 
   const countryCodes = [
     { code: '+51', country: 'pe', name: 'Perú', digits: 9, placeholder: '999 999 999' },
-    { code: '+1', country: 'us', name: 'Estados Unidos', digits: 10, placeholder: '(555) 555-5555' },
     { code: '+52', country: 'mx', name: 'México', digits: 10, placeholder: '55 1234 5678' },
     { code: '+54', country: 'ar', name: 'Argentina', digits: 10, placeholder: '11 1234 5678' },
-    { code: '+55', country: 'br', name: 'Brasil', digits: 11, placeholder: '11 91234 5678' },
-    { code: '+56', country: 'cl', name: 'Chile', digits: 9, placeholder: '9 1234 5678' },
     { code: '+57', country: 'co', name: 'Colombia', digits: 10, placeholder: '300 123 4567' },
-    { code: '+58', country: 've', name: 'Venezuela', digits: 10, placeholder: '412 123 4567' },
-    { code: '+593', country: 'ec', name: 'Ecuador', digits: 9, placeholder: '99 123 4567' },
-    { code: '+591', country: 'bo', name: 'Bolivia', digits: 8, placeholder: '7123 4567' },
-    { code: '+595', country: 'py', name: 'Paraguay', digits: 9, placeholder: '981 123456' },
-    { code: '+598', country: 'uy', name: 'Uruguay', digits: 8, placeholder: '94 123 456' },
+    { code: '+56', country: 'cl', name: 'Chile', digits: 9, placeholder: '9 1234 5678' },
+    { code: '+1', country: 'us', name: 'USA', digits: 10, placeholder: '(555) 555-5555' },
     { code: '+34', country: 'es', name: 'España', digits: 9, placeholder: '612 345 678' },
-    { code: '+33', country: 'fr', name: 'Francia', digits: 9, placeholder: '6 12 34 56 78' },
-    { code: '+49', country: 'de', name: 'Alemania', digits: 11, placeholder: '151 1234 5678' },
-    { code: '+39', country: 'it', name: 'Italia', digits: 10, placeholder: '312 345 6789' },
-    { code: '+44', country: 'gb', name: 'Reino Unido', digits: 10, placeholder: '7911 123456' },
-    { code: '+351', country: 'pt', name: 'Portugal', digits: 9, placeholder: '912 345 678' },
-    { code: '+81', country: 'jp', name: 'Japón', digits: 10, placeholder: '90 1234 5678' },
-    { code: '+86', country: 'cn', name: 'China', digits: 11, placeholder: '131 1234 5678' },
-    { code: '+82', country: 'kr', name: 'Corea del Sur', digits: 10, placeholder: '10 1234 5678' },
-    { code: '+61', country: 'au', name: 'Australia', digits: 9, placeholder: '412 345 678' },
-    { code: '+64', country: 'nz', name: 'Nueva Zelanda', digits: 9, placeholder: '21 123 4567' },
   ]
 
   const selectedCountry = countryCodes.find(c => c.code === formData.phonePrefix) || countryCodes[0]
@@ -389,243 +399,186 @@ function RegisterContent({ onChangeView, onSuccess }) {
   }
 
   return (
-    <div className="p-8 space-y-6">
-      {/* Logo y título */}
+    <div className="space-y-6 animate-fadeIn pb-4">
       <div className="text-center">
         <img
-          src="https://plazatrujillo.com/wp-content/uploads/2025/09/cropped-logo-plaza-trujillo-192x192.webp"
-          alt="Hotel Plaza Trujillo"
-          className="mx-auto h-16 w-16 rounded-full object-cover mb-4 shadow-lg"
+          src={localLogo}
+          alt="Logo"
+          className="mx-auto h-16 w-auto object-contain mb-4 hover:scale-105 transition-transform duration-300"
         />
-        <h2 className="text-3xl font-bold text-[#591117] mb-2">
+        <h2 className="text-2xl font-bold text-[#591117]">
           Crea tu cuenta
         </h2>
-        <p className="text-gray-600">
+        <p className="text-gray-500 text-sm mt-1">
           Únete y disfruta de beneficios exclusivos
         </p>
       </div>
 
-      {/* Formulario de registro */}
-      <div className="space-y-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Nombre y Apellido */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="modal-firstName" className="block text-sm font-medium text-gray-700 mb-1">
-                Nombre
-              </label>
-              <input
-                id="modal-firstName"
-                name="firstName"
-                type="text"
-                required
-                value={formData.firstName}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F26A4B] focus:border-transparent transition-all duration-200"
-                placeholder="Tu nombre"
-              />
-            </div>
-            <div>
-              <label htmlFor="modal-lastName" className="block text-sm font-medium text-gray-700 mb-1">
-                Apellido
-              </label>
-              <input
-                id="modal-lastName"
-                name="lastName"
-                type="text"
-                required
-                value={formData.lastName}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F26A4B] focus:border-transparent transition-all duration-200"
-                placeholder="Tu apellido"
-              />
-            </div>
-          </div>
-
-          {/* Email */}
-          <div>
-            <label htmlFor="modal-reg-email" className="block text-sm font-medium text-gray-700 mb-1">
-              Correo electrónico
-            </label>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Nombres */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-gray-700 ml-1">Nombre</label>
             <input
-              id="modal-reg-email"
-              name="email"
-              type="email"
-              autoComplete="email"
+              name="firstName"
+              type="text"
               required
-              value={formData.email}
+              value={formData.firstName}
               onChange={handleInputChange}
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F26A4B] focus:border-transparent transition-all duration-200"
-              placeholder="tu@email.com"
+              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#F26A4B] outline-none transition-all"
+              placeholder="Nombre"
             />
           </div>
-
-          {/* Teléfono con selector de país */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Teléfono (opcional)
-            </label>
-            <div className="flex gap-2">
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setShowPrefixDropdown(!showPrefixDropdown)}
-                  className="flex items-center gap-1 px-3 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
-                >
-                  <span className={`fi fi-${selectedCountry.country}`}></span>
-                  <span className="text-sm">{formData.phonePrefix}</span>
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </button>
-                {showPrefixDropdown && (
-                  <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-20 max-h-48 overflow-y-auto w-56">
-                    {countryCodes.map((country) => (
-                      <button
-                        key={country.code}
-                        type="button"
-                        onClick={() => {
-                          setFormData(prev => ({ ...prev, phonePrefix: country.code }))
-                          setShowPrefixDropdown(false)
-                        }}
-                        className="flex items-center gap-2 w-full px-3 py-2 hover:bg-gray-100 text-sm text-left cursor-pointer"
-                      >
-                        <span className={`fi fi-${country.country}`}></span>
-                        <span className="flex-1">{country.name}</span>
-                        <span className="text-gray-400">{country.code}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <input
-                name="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={handleInputChange}
-                className="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F26A4B] focus:border-transparent transition-all duration-200"
-                placeholder={selectedCountry.placeholder}
-              />
-            </div>
-          </div>
-
-          {/* Contraseña */}
-          <div>
-            <label htmlFor="modal-reg-password" className="block text-sm font-medium text-gray-700 mb-1">
-              Contraseña
-            </label>
-            <div className="relative">
-              <input
-                id="modal-reg-password"
-                name="password"
-                type={showPassword ? 'text' : 'password'}
-                required
-                value={formData.password}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2.5 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F26A4B] focus:border-transparent transition-all duration-200"
-                placeholder="Mínimo 6 caracteres"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer"
-              >
-                {showPassword ? <IoEyeOff className="w-5 h-5" /> : <IoEye className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
-
-          {/* Confirmar contraseña */}
-          <div>
-            <label htmlFor="modal-confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-              Confirmar contraseña
-            </label>
-            <div className="relative">
-              <input
-                id="modal-confirmPassword"
-                name="confirmPassword"
-                type={showConfirmPassword ? 'text' : 'password'}
-                required
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2.5 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F26A4B] focus:border-transparent transition-all duration-200"
-                placeholder="Repite tu contraseña"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer"
-              >
-                {showConfirmPassword ? <IoEyeOff className="w-5 h-5" /> : <IoEye className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
-
-          {/* Términos y condiciones */}
-          <div className="flex items-start gap-2">
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-gray-700 ml-1">Apellido</label>
             <input
-              id="modal-acceptTerms"
-              name="acceptTerms"
-              type="checkbox"
-              checked={formData.acceptTerms}
+              name="lastName"
+              type="text"
+              required
+              value={formData.lastName}
               onChange={handleInputChange}
-              className="mt-1 h-4 w-4 text-[#F21905] focus:ring-[#F26A4B] border-gray-300 rounded cursor-pointer"
+              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#F26A4B] outline-none transition-all"
+              placeholder="Apellido"
             />
-            <label htmlFor="modal-acceptTerms" className="text-sm text-gray-600 cursor-pointer">
-              Acepto los{' '}
-              <span className="text-[#591117] hover:text-[#F26A4B] cursor-pointer">términos y condiciones</span>
-              {' '}y la{' '}
-              <span className="text-[#591117] hover:text-[#F26A4B] cursor-pointer">política de privacidad</span>
-            </label>
-          </div>
-
-          {/* Botón de registro */}
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-gradient-to-r from-[#591117] to-[#F26A4B] text-white py-3 px-4 rounded-lg font-medium hover:from-[#F21905] hover:to-[#8C0808] focus:outline-none focus:ring-2 focus:ring-[#F26A4B] focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-          >
-            {isLoading ? (
-              <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                Registrando...
-              </div>
-            ) : (
-              'Crear cuenta'
-            )}
-          </button>
-        </form>
-
-        {/* Divisor */}
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300" />
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">O regístrate con</span>
           </div>
         </div>
 
-        {/* Botón de registro con Google */}
-        <button
-          onClick={() => handleSocialRegister('google')}
-          className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-lg hover:bg-[#FFF7F7] transition-colors duration-200 cursor-pointer"
-        >
-          <FcGoogle className="w-5 h-5" />
-          <span className="text-gray-600 font-medium">Google</span>
-        </button>
-      </div>
+        {/* Email */}
+        <div className="space-y-1">
+          <label className="text-xs font-semibold text-gray-700 ml-1">Email</label>
+          <input
+            name="email"
+            type="email"
+            required
+            value={formData.email}
+            onChange={handleInputChange}
+            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#F26A4B] outline-none transition-all"
+            placeholder="tu@email.com"
+          />
+        </div>
 
-      {/* Enlace a login */}
-      <div className="text-center">
-        <p className="text-gray-600">
-          ¿Ya tienes una cuenta?{' '}
+        {/* Teléfono */}
+        <div className="space-y-1">
+          <label className="text-xs font-semibold text-gray-700 ml-1">Teléfono</label>
+          <div className="flex gap-2">
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setShowPrefixDropdown(!showPrefixDropdown)}
+                className="flex items-center gap-2 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                <span className={`fi fi-${selectedCountry.country}`}></span>
+                <span className="text-sm font-medium">{formData.phonePrefix}</span>
+              </button>
+              {showPrefixDropdown && (
+                <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-xl z-20 max-h-48 overflow-y-auto w-64 scrollbar-hide">
+                  {countryCodes.map((country) => (
+                    <button
+                      key={country.code}
+                      type="button"
+                      onClick={() => {
+                        setFormData(prev => ({ ...prev, phonePrefix: country.code }))
+                        setShowPrefixDropdown(false)
+                      }}
+                      className="flex items-center gap-3 w-full px-4 py-2 hover:bg-gray-50 text-sm text-left border-b border-gray-50 last:border-0"
+                    >
+                      <span className={`fi fi-${country.country}`}></span>
+                      <span className="flex-1 font-medium text-gray-700">{country.name}</span>
+                      <span className="text-gray-400">{country.code}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <input
+              name="phone"
+              type="tel"
+              value={formData.phone}
+              onChange={handleInputChange}
+              className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#F26A4B] outline-none transition-all"
+              placeholder={selectedCountry.placeholder}
+            />
+          </div>
+        </div>
+
+        {/* Passwords */}
+        <div className="space-y-4">
+            <div className="space-y-1">
+                <label className="text-xs font-semibold text-gray-700 ml-1">Contraseña</label>
+                <div className="relative">
+                    <input
+                        name="password"
+                        type={showPassword ? 'text' : 'password'}
+                        required
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2.5 pr-10 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#F26A4B] outline-none transition-all"
+                        placeholder="Mínimo 6 caracteres"
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-[#591117]"
+                    >
+                        {showPassword ? <IoEyeOff /> : <IoEye />}
+                    </button>
+                </div>
+            </div>
+            <div className="space-y-1">
+                <label className="text-xs font-semibold text-gray-700 ml-1">Confirmar Contraseña</label>
+                <div className="relative">
+                    <input
+                        name="confirmPassword"
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        required
+                        value={formData.confirmPassword}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2.5 pr-10 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#F26A4B] outline-none transition-all"
+                        placeholder="Repite la contraseña"
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-[#591117]"
+                    >
+                        {showConfirmPassword ? <IoEyeOff /> : <IoEye />}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div className="flex items-start gap-3 py-2">
+          <input
+            id="modal-acceptTerms"
+            name="acceptTerms"
+            type="checkbox"
+            checked={formData.acceptTerms}
+            onChange={handleInputChange}
+            className="mt-1 h-4 w-4 text-[#F26A4B] focus:ring-[#F26A4B] border-gray-300 rounded cursor-pointer"
+          />
+          <label htmlFor="modal-acceptTerms" className="text-xs text-gray-600 leading-snug">
+            Acepto los <span className="text-[#591117] font-semibold hover:underline cursor-pointer">términos y condiciones</span> y la <span className="text-[#591117] font-semibold hover:underline cursor-pointer">política de privacidad</span>.
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full bg-gradient-to-r from-[#591117] to-[#8C0808] text-white py-3 rounded-xl font-bold shadow-lg shadow-[#591117]/20 hover:shadow-[#591117]/40 hover:scale-[1.01] transition-all disabled:opacity-70"
+        >
+          {isLoading ? 'Registrando...' : 'Crear Cuenta'}
+        </button>
+      </form>
+
+      <div className="text-center pt-2">
+        <p className="text-sm text-gray-600">
+          ¿Ya tienes cuenta?{' '}
           <button
             type="button"
             onClick={() => onChangeView('login')}
-            className="font-medium text-[#591117] hover:text-[#F26A4B] transition-colors cursor-pointer"
+            className="font-bold text-[#F26A4B] hover:text-[#D94F30] transition-colors"
           >
-            Inicia sesión
+            Inicia sesión aquí
           </button>
         </p>
       </div>
@@ -633,7 +586,7 @@ function RegisterContent({ onChangeView, onSuccess }) {
   )
 }
 
-// ===== CONTENIDO DE RECUPERAR CONTRASEÑA (igual que ForgotPasswordPage) =====
+// ===== CONTENIDO DE RECUPERAR CONTRASEÑA =====
 function ForgotPasswordContent({ onChangeView }) {
   const [email, setEmail] = useState('')
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -676,149 +629,71 @@ function ForgotPasswordContent({ onChangeView }) {
 
   if (isSubmitted) {
     return (
-      <div className="p-8 space-y-6">
-        {/* Icono de éxito */}
-        <div className="text-center">
-          <div className="mx-auto h-16 w-16 bg-gradient-to-r from-[#591117] to-[#F26A4B] rounded-full flex items-center justify-center mb-4 shadow-lg">
-            <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h2 className="text-2xl font-bold text-[#591117] mb-2">
-            ¡Correo enviado!
-          </h2>
-          <p className="text-gray-600 mb-6">
-            Hemos enviado un enlace de recuperación a tu correo electrónico.
-            Por favor revisa tu bandeja de entrada y sigue las instrucciones.
-          </p>
-          <div className="bg-[#FFF7F7] border border-[#F26A4B]/20 rounded-lg p-4 mb-6">
-            <p className="text-sm text-[#591117]">
-              <strong>Consejo:</strong> Si no encuentras el correo en tu bandeja de entrada,
-              revisa la carpeta de spam o correo no deseado.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => onChangeView('login')}
-            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#591117] to-[#F26A4B] text-white font-medium rounded-lg hover:from-[#F21905] hover:to-[#8C0808] transition-all duration-200 cursor-pointer"
-          >
-            Volver al inicio de sesión
-          </button>
+      <div className="space-y-8 text-center animate-fadeIn py-10">
+        <div className="mx-auto h-20 w-20 bg-green-100 rounded-full flex items-center justify-center mb-4">
+          <svg className="h-10 w-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
         </div>
+        <div className="space-y-3">
+            <h2 className="text-2xl font-bold text-gray-800">¡Correo enviado!</h2>
+            <p className="text-gray-600 max-w-xs mx-auto">
+            Hemos enviado las instrucciones a <strong>{email}</strong>
+            </p>
+        </div>
+        <button
+          onClick={() => onChangeView('login')}
+          className="px-8 py-3 bg-gray-900 text-white rounded-xl font-medium hover:bg-black transition-all"
+        >
+          Volver al login
+        </button>
       </div>
     )
   }
 
   return (
-    <div className="p-8 space-y-6">
-      {/* Logo y título */}
+    <div className="space-y-8 animate-fadeIn">
       <div className="text-center">
         <img
-          src="https://plazatrujillo.com/wp-content/uploads/2025/09/cropped-logo-plaza-trujillo-192x192.webp"
-          alt="Hotel Plaza Trujillo"
-          className="mx-auto h-16 w-16 rounded-full object-cover mb-4 shadow-lg"
+          src={localLogo}
+          alt="Logo"
+          className="mx-auto h-16 w-auto object-contain mb-6 hover:scale-105 transition-transform duration-300"
         />
-        <h2 className="text-2xl font-bold text-[#591117] mb-2">
-          ¿Olvidaste tu contraseña?
-        </h2>
-        <p className="text-gray-600">
-          No te preocupes, te ayudaremos a recuperarla
+        <h2 className="text-2xl font-bold text-[#591117]">Recuperar contraseña</h2>
+        <p className="text-gray-500 mt-2">
+          Ingresa tu email y te enviaremos las instrucciones
         </p>
       </div>
 
-      {/* Información adicional */}
-      <div className="bg-[#FFF7F7] border border-[#F26A4B]/20 rounded-lg p-4">
-        <p className="text-sm text-[#591117]">
-          <strong>Instrucciones:</strong> Ingresa tu correo electrónico y te enviaremos
-          un enlace seguro para restablecer tu contraseña.
-        </p>
-      </div>
-
-      {/* Formulario de recuperación */}
-      <div className="space-y-6">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Campo de email */}
-          <div>
-            <label htmlFor="modal-forgot-email" className="block text-sm font-medium text-gray-700 mb-2">
-              Correo electrónico
-            </label>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-2">
+            <label className="text-sm font-semibold text-gray-700 ml-1">Correo electrónico</label>
             <input
-              id="modal-forgot-email"
-              name="email"
               type="email"
-              autoComplete="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F26A4B] focus:border-transparent transition-all duration-200"
-              placeholder="tu@email.com"
+              className="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#F26A4B] outline-none transition-all"
+              placeholder="nombre@ejemplo.com"
             />
-            <p className="mt-1 text-sm text-gray-500">
-              Te enviaremos un enlace de recuperación a este correo
-            </p>
-          </div>
-
-          {/* Botón de enviar */}
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-gradient-to-r from-[#591117] to-[#F26A4B] text-white py-3 px-4 rounded-lg font-medium hover:from-[#F21905] hover:to-[#8C0808] focus:outline-none focus:ring-2 focus:ring-[#F26A4B] focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-          >
-            {isLoading ? (
-              <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                Enviando...
-              </div>
-            ) : (
-              'Enviar enlace de recuperación'
-            )}
-          </button>
-        </form>
-
-        {/* Consejos de seguridad */}
-        <div className="border-t border-gray-200 pt-6">
-          <h3 className="text-sm font-medium text-gray-900 mb-3">
-            Consejos de seguridad:
-          </h3>
-          <ul className="text-sm text-gray-600 space-y-2">
-            <li className="flex items-start">
-              <span className="text-[#F26A4B] mr-2">•</span>
-              Usa una contraseña única y segura
-            </li>
-            <li className="flex items-start">
-              <span className="text-[#F26A4B] mr-2">•</span>
-              No compartas tu contraseña con nadie
-            </li>
-            <li className="flex items-start">
-              <span className="text-[#F26A4B] mr-2">•</span>
-              Actualiza tu contraseña regularmente
-            </li>
-          </ul>
         </div>
-      </div>
 
-      {/* Enlaces adicionales */}
-      <div className="text-center space-y-4">
-        <p className="text-gray-600">
-          ¿Recuerdas tu contraseña?{' '}
-          <button
-            type="button"
-            onClick={() => onChangeView('login')}
-            className="font-medium text-[#591117] hover:text-[#F26A4B] transition-colors cursor-pointer"
-          >
-            Inicia sesión
-          </button>
-        </p>
-        <p className="text-sm text-gray-500">
-          ¿No tienes una cuenta?{' '}
-          <button
-            type="button"
-            onClick={() => onChangeView('register')}
-            className="text-[#591117] hover:text-[#F26A4B] transition-colors cursor-pointer"
-          >
-            Regístrate
-          </button>
-        </p>
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full bg-[#591117] text-white py-4 rounded-xl font-bold shadow-lg hover:bg-[#8C0808] transition-all disabled:opacity-70"
+        >
+          {isLoading ? 'Enviando...' : 'Enviar enlace'}
+        </button>
+      </form>
+
+      <div className="text-center">
+        <button
+          onClick={() => onChangeView('login')}
+          className="text-sm font-semibold text-gray-500 hover:text-[#591117] transition-colors flex items-center justify-center gap-2 w-full"
+        >
+          ← Volver al inicio de sesión
+        </button>
       </div>
     </div>
   )

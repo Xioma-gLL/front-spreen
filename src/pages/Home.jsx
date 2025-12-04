@@ -9,10 +9,12 @@ export default function Home() {
   useEffect(() => {
     document.title = `${t('pages.home.title')} - Hotel Plaza Trujillo`
   }, [t])
+  
   return (
-    <div className="min-h-screen flex flex-col">
+    // 'selection:bg-[#591117] selection:text-white' personaliza el color cuando seleccionas texto
+    <div className="min-h-screen flex flex-col w-full relative overflow-x-hidden bg-white selection:bg-[#591117] selection:text-white">
       <Header />
-      <main className="flex-1">
+      <main className="flex-1 w-full flex flex-col">
         <Hero />
       </main>
       <Footer />

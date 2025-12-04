@@ -140,9 +140,26 @@ export default function Header() {
 
   return (
     <>
-      {/* ===== BARRA SUPERIOR (Top Bar) ===== */}
-      <div className="bg-[#f8f9fa] border-b border-gray-100 text-[11px] uppercase tracking-wider font-semibold text-gray-500 hidden lg:block">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      {/* ===== ESTILOS PARA ELIMINAR BARRA DE SCROLL ===== */}
+      <style>
+        {`
+          /* Ocultar barra de scroll para Chrome, Safari y Opera */
+          ::-webkit-scrollbar {
+            display: none;
+          }
+          /* Ocultar barra de scroll para IE, Edge y Firefox */
+          html, body {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+            overflow-x: hidden; /* Prevenir scroll horizontal */
+          }
+        `}
+      </style>
+
+      {/* ===== BARRA SUPERIOR (Top Bar) - ANCHO COMPLETO ===== */}
+      <div className="bg-[#f8f9fa] border-b border-gray-100 text-[11px] uppercase tracking-wider font-semibold text-gray-500 hidden lg:block w-full">
+        {/* Cambiado max-w-7xl por w-full y ajuste de px */}
+        <div className="w-full px-6 lg:px-10">
           <div className="flex items-center justify-between h-10">
             {/* Izquierda */}
             <div className="flex items-center gap-4">
@@ -157,19 +174,19 @@ export default function Header() {
             </div>
 
             {/* Derecha */}
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-8">
               <a href="tel:+51992810971" className="hover:text-[#591117] transition-colors flex items-center gap-2">
-                <IconPhone className="w-3 h-3 mb-0.5" />
+                <IconPhone className="w-3.5 h-3.5 text-[#591117] mb-0.5" />
                 +51 992 810 971
               </a>
               <div className="relative group">
                 <a href="mailto:reservas@plazatrujillo.com" className="hover:text-[#591117] transition-colors flex items-center gap-2">
-                  <IconMail className="w-3 h-3 mb-0.5" />
+                  <IconMail className="w-3.5 h-3.5 text-[#591117] mb-0.5" />
                   RESERVAS
                 </a>
               </div>
               
-              <div className="flex items-center gap-4 border-l border-gray-300 pl-6 ml-2">
+              <div className="flex items-center gap-4 border-l border-gray-300 pl-6">
                 {/* Moneda */}
                 <div ref={currencyMenuRef} className="relative">
                   <button
@@ -214,20 +231,18 @@ export default function Header() {
         </div>
       </div>
 
-      {/* ===== HEADER PRINCIPAL ===== */}
-      <header className="bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] transition-all duration-300 h-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+      {/* ===== HEADER PRINCIPAL - ANCHO COMPLETO ===== */}
+      <header className="bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] transition-all duration-300 h-24">
+        {/* Cambiado max-w-7xl por w-full y ajuste de px para que llegue a los bordes */}
+        <div className="w-full px-4 sm:px-6 lg:px-10 h-full">
           <div className="flex items-center justify-between h-full">
             
-            {/* LADO IZQUIERDO: Botón Hamburguesa (Móvil) + Logo 
-                CORRECCIÓN: Se agregó 'lg:-ml-8' para mover el logo más a la izquierda en PC 
-            */}
-            <div className="flex items-center gap-4 flex-shrink-0 lg:-ml-8">
-                
-                {/* 1. Botón Hamburguesa (SOLO MÓVIL) */}
+            {/* LADO IZQUIERDO: Logo totalmente a la izquierda */}
+            <div className="flex items-center flex-shrink-0">
+                {/* Botón Hamburguesa (SOLO MÓVIL) */}
                 <button
                     type="button"
-                    className="lg:hidden p-2 -ml-2 rounded-full text-gray-600 hover:bg-gray-50 hover:text-[#591117] transition-all focus:outline-none"
+                    className="lg:hidden p-2 -ml-2 rounded-full text-gray-600 hover:bg-gray-50 hover:text-[#591117] transition-all focus:outline-none mr-2"
                     onClick={() => setOpen(!open)}
                     aria-label="Menú"
                 >
@@ -240,45 +255,45 @@ export default function Header() {
                     </svg>
                 </button>
 
-                {/* 2. Logo Nuevo (Rectangular) - A la izquierda */}
+                {/* Logo GRANDE y a la izquierda */}
                 <Link to="/" className="flex items-center group">
                     <img
                         src={logoPlaza}
                         alt="Plaza Trujillo Hotel"
-                        className="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                        className="h-12 sm:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                     />
                 </Link>
             </div>
 
-            {/* LADO DERECHO: Navegación + Estrellas/Dirección + Auth */}
-            <div className="flex items-center gap-6">
+            {/* LADO DERECHO: Navegación + Estrellas + Auth */}
+            <div className="flex items-center gap-8 lg:gap-12">
                 
-                {/* Navegación Desktop */}
-                <div className="hidden lg:flex items-center gap-6">
-                    <nav className="flex items-center gap-6">
+                {/* Navegación Desktop - Texto más grande */}
+                <div className="hidden lg:flex items-center gap-8">
+                    <nav className="flex items-center gap-8">
                         {navLinks.map((l) => (
                         l.href === '/info' ? (
                             <button
                             key={l.key}
                             onClick={() => setInfoModalOpen(true)}
-                            className="text-gray-600 hover:text-[#591117] text-sm font-medium tracking-wide transition-all hover:-translate-y-0.5 py-2 cursor-pointer relative group"
+                            className="text-gray-700 hover:text-[#591117] text-[15px] font-semibold tracking-wide transition-all hover:-translate-y-0.5 py-2 cursor-pointer relative group"
                             >
                             {t(l.key)}
-                            <span className="absolute bottom-1 left-0 w-0 h-px bg-[#591117] transition-all duration-300 group-hover:w-full"></span>
+                            <span className="absolute bottom-1 left-0 w-0 h-[2px] bg-[#591117] transition-all duration-300 group-hover:w-full"></span>
                             </button>
                         ) : (
                             <NavLink
                             key={l.key}
                             to={l.href}
                             className={({ isActive }) =>
-                                `text-sm font-medium tracking-wide transition-all py-2 relative group
-                                ${isActive ? 'text-[#591117]' : 'text-gray-600 hover:text-[#591117]'}`
+                                `text-[15px] font-semibold tracking-wide transition-all py-2 relative group
+                                ${isActive ? 'text-[#591117]' : 'text-gray-700 hover:text-[#591117]'}`
                             }
                             >
                             {({ isActive }) => (
                                 <>
                                 {t(l.key)}
-                                <span className={`absolute bottom-0 left-0 h-0.5 bg-[#591117] transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+                                <span className={`absolute bottom-0 left-0 h-[2px] bg-[#591117] transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
                                 </>
                             )}
                             </NavLink>
@@ -287,95 +302,83 @@ export default function Header() {
                     </nav>
                 </div>
 
-                {/* === NUEVO BLOQUE: Estrellas y Dirección (Desktop) === */}
-                <div className="hidden xl:flex flex-col items-end border-r border-gray-200 pr-6 mr-2">
-                    {/* Estrellas */}
-                    <div className="flex gap-0.5 text-yellow-400 mb-0.5">
-                        <IconStar className="w-4 h-4" />
-                        <IconStar className="w-4 h-4" />
-                        <IconStar className="w-4 h-4" />
+                {/* Dirección y Estrellas */}
+                <div className="hidden xl:flex flex-col items-start border-l border-gray-200 pl-6 h-10 justify-center">
+                    <div className="flex gap-1 text-yellow-400 mb-0.5">
+                        <IconStar className="w-3.5 h-3.5" />
+                        <IconStar className="w-3.5 h-3.5" />
+                        <IconStar className="w-3.5 h-3.5" />
                     </div>
-                    {/* Dirección */}
-                    <div className="flex items-center gap-1.5 text-gray-500 text-xs">
+                    <div className="flex items-center gap-2 text-gray-500 text-xs">
                         <IconLocation className="w-3.5 h-3.5 text-gray-400" />
                         <span>Jr. Bolognesi 344 – Centro – Trujillo</span>
                     </div>
                 </div>
 
-                {/* Botón Auth */}
-                {isAuthenticated ? (
-                    <div ref={userMenuRef} className="relative">
-                    <button
-                        onClick={toggleUserMenu}
-                        className="flex items-center gap-3 pl-1 pr-3 py-1 rounded-full border border-gray-100 hover:border-gray-300 hover:shadow-md transition-all cursor-pointer group bg-white"
-                    >
-                        {user?.photoUrl ? (
-                        <img src={user.photoUrl} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />
-                        ) : (
-                        <div className="w-8 h-8 rounded-full bg-[#591117] text-white flex items-center justify-center text-xs font-bold">
-                            {user?.firstName?.charAt(0)?.toUpperCase()}{user?.lastName?.charAt(0)?.toUpperCase()}
-                        </div>
-                        )}
-                        <span className="text-sm font-medium text-gray-700 group-hover:text-[#591117] max-w-[100px] truncate hidden sm:block">
-                        {user?.firstName}
-                        </span>
-                        <svg className={`w-4 h-4 text-gray-400 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-
-                    {/* Dropdown Desktop */}
-                    {userMenuOpen && (
-                        <div className="absolute right-0 mt-4 w-64 bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100 py-2 z-50 animate-fade-in-up">
-                        <div className="px-5 py-4 border-b border-gray-50 bg-gradient-to-r from-gray-50 to-white">
-                            <p className="text-sm font-bold text-gray-900">{user?.firstName} {user?.lastName}</p>
-                            <p className="text-xs text-gray-500 truncate mt-0.5">{user?.email}</p>
-                        </div>
-                        <div className="p-1">
+                {/* Botón Auth - Botón Reservar más grande y oscuro como en la foto */}
+                <div className="flex items-center gap-4 border-l border-gray-200 pl-6 h-10">
+                    {isAuthenticated ? (
+                        <div ref={userMenuRef} className="relative">
                             <button
-                                onClick={() => { setProfileModalSection('reservations'); setProfileModalOpen(true); setUserMenuOpen(false) }}
-                                className="flex items-center w-full px-4 py-2.5 text-sm text-gray-600 hover:bg-[#591117]/5 hover:text-[#591117] rounded-lg transition-colors"
+                                onClick={toggleUserMenu}
+                                className="flex items-center gap-3 pl-1 pr-3 py-1 rounded-full border border-gray-100 hover:border-gray-300 hover:shadow-md transition-all cursor-pointer group bg-white"
                             >
-                                <span className="w-8"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg></span>
-                                Mis Reservas
+                                {user?.photoUrl ? (
+                                <img src={user.photoUrl} alt="Avatar" className="w-9 h-9 rounded-full object-cover" />
+                                ) : (
+                                <div className="w-9 h-9 rounded-full bg-[#591117] text-white flex items-center justify-center text-sm font-bold">
+                                    {user?.firstName?.charAt(0)?.toUpperCase()}{user?.lastName?.charAt(0)?.toUpperCase()}
+                                </div>
+                                )}
+                                <span className="text-sm font-medium text-gray-700 group-hover:text-[#591117] max-w-[100px] truncate hidden sm:block">
+                                {user?.firstName}
+                                </span>
+                                <svg className={`w-4 h-4 text-gray-400 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            
+                            {/* Dropdown User (Código igual, abreviado para legibilidad) */}
+                            {userMenuOpen && (
+                                <div className="absolute right-0 mt-4 w-64 bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100 py-2 z-50">
+                                   <div className="px-5 py-4 border-b border-gray-50 bg-gradient-to-r from-gray-50 to-white">
+                                        <p className="text-sm font-bold text-gray-900">{user?.firstName} {user?.lastName}</p>
+                                        <p className="text-xs text-gray-500 truncate mt-0.5">{user?.email}</p>
+                                    </div>
+                                    <div className="p-1">
+                                        <button onClick={() => { setProfileModalSection('reservations'); setProfileModalOpen(true); setUserMenuOpen(false) }} className="flex items-center w-full px-4 py-2.5 text-sm text-gray-600 hover:bg-[#591117]/5 hover:text-[#591117] rounded-lg transition-colors">
+                                            <span className="w-8"><IconBook className="w-4 h-4" /></span> Mis Reservas
+                                        </button>
+                                        <button onClick={() => { setProfileModalSection('profile'); setProfileModalOpen(true); setUserMenuOpen(false) }} className="flex items-center w-full px-4 py-2.5 text-sm text-gray-600 hover:bg-[#591117]/5 hover:text-[#591117] rounded-lg transition-colors">
+                                            <span className="w-8"><IconUser className="w-4 h-4" /></span> Mi Perfil
+                                        </button>
+                                    </div>
+                                    <div className="border-t border-gray-100 my-1 mx-4"></div>
+                                    <div className="p-1">
+                                        <button onClick={() => { handleLogout(); setUserMenuOpen(false) }} className="flex items-center w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                                            <span className="w-8"><IconSignOut className="w-4 h-4" /></span> Cerrar Sesión
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-5">
+                            <button
+                                onClick={() => openAuthModal('login')}
+                                className="text-gray-600 hover:text-[#591117] text-[15px] font-medium transition-colors hidden sm:block"
+                            >
+                                Ingresar
                             </button>
                             <button
-                                onClick={() => { setProfileModalSection('profile'); setProfileModalOpen(true); setUserMenuOpen(false) }}
-                                className="flex items-center w-full px-4 py-2.5 text-sm text-gray-600 hover:bg-[#591117]/5 hover:text-[#591117] rounded-lg transition-colors"
+                                onClick={() => openAuthModal('login')} 
+                                className="bg-[#591117] hover:bg-[#420d11] text-white text-[15px] px-8 py-3 rounded-full font-bold transition-all shadow-lg hover:shadow-[#591117]/40 hover:-translate-y-0.5 active:translate-y-0"
                             >
-                                <span className="w-8"><IconUser className="w-4 h-4" /></span>
-                                Mi Perfil
+                                Reservar
                             </button>
-                        </div>
-                        <div className="border-t border-gray-100 my-1 mx-4"></div>
-                        <div className="p-1">
-                            <button
-                                onClick={() => { handleLogout(); setUserMenuOpen(false) }}
-                                className="flex items-center w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            >
-                                <span className="w-8"><IconSignOut className="w-4 h-4" /></span>
-                                Cerrar Sesión
-                            </button>
-                        </div>
                         </div>
                     )}
-                    </div>
-                ) : (
-                    <div className="flex items-center gap-3">
-                    <button
-                        onClick={() => openAuthModal('login')}
-                        className="text-gray-600 hover:text-[#591117] text-sm font-medium transition-colors hidden sm:block"
-                    >
-                        Ingresar
-                    </button>
-                    <button
-                        onClick={() => openAuthModal('login')} 
-                        className="bg-[#591117] hover:bg-[#4a0d12] text-white text-sm px-5 py-2.5 rounded-full font-medium transition-all shadow-lg hover:shadow-[#591117]/30 hover:-translate-y-0.5 active:translate-y-0"
-                    >
-                        Reservar
-                    </button>
-                    </div>
-                )}
+                </div>
             </div>
           </div>
         </div>
@@ -385,7 +388,7 @@ export default function Header() {
       
       {/* 1. Backdrop */}
       <div 
-        className={`fixed inset-0 top-20 bg-black/50 backdrop-blur-sm z-30 lg:hidden transition-opacity duration-500 ease-in-out ${
+        className={`fixed inset-0 top-24 bg-black/50 backdrop-blur-sm z-30 lg:hidden transition-opacity duration-500 ease-in-out ${
           open ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
         }`}
         onClick={() => setOpen(false)}
@@ -393,7 +396,7 @@ export default function Header() {
 
       {/* 2. Panel Lateral - AQUI SE QUITA LA BARRA DE SCROLL VISUALMENTE */}
       <aside 
-        className={`fixed top-20 left-0 z-40 h-[calc(100vh-5rem)] w-full max-w-xs bg-white shadow-2xl transform transition-transform duration-500 ease-in-out lg:hidden flex flex-col overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] ${
+        className={`fixed top-24 left-0 z-40 h-[calc(100vh-6rem)] w-full max-w-xs bg-white shadow-2xl transform transition-transform duration-500 ease-in-out lg:hidden flex flex-col overflow-y-auto ${
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >

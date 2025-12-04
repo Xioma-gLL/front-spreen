@@ -174,7 +174,7 @@ function LoginContent({ onChangeView, onSuccess }) {
   }
 
   const handleSocialLogin = (provider) => {
-    window.location.href = `http://localhost:8080/oauth2/authorize/${provider}`
+    window.location.href = `https://backspring-wrc6.onrender.com/oauth2/authorize/${provider}`
   }
 
   return (

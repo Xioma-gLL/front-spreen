@@ -20,15 +20,11 @@ export default function Footer() {
       <footer className="border-t border-gray-200 bg-white/80 backdrop-blur-sm">
         {/*
           CONTENEDOR PRINCIPAL:
-          - justify-center para centrar el contenido.
-          - flex-col en móvil para apilar los grupos.
-          - md:flex-row en escritorio para ponerlos lado a lado.
-          - items-center para centrar verticalmente los elementos de los grupos.
+          - Se cambió 'py-4' por 'py-2' para reducir la altura del footer.
         */}
-        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6">
+        <div className="max-w-7xl mx-auto px-6 py-2 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6">
           
           {/* Contenedor de Iconos Sociales */}
-          {/* Mantenemos los iconos juntos en una sola fila. */}
           <div className="flex items-center gap-6">
             {/* Tamaño de Iconos: w-6 h-6 */}
             <a href="https://www.facebook.com/plazatrujillohotel/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[#591117] transition-colors cursor-pointer">
@@ -43,23 +39,16 @@ export default function Footer() {
           </div>
 
           {/* Contenedor de Políticas */}
-          {/*
-            - Usamos 'flex-col' por defecto (móvil) para que se apilen verticalmente.
-            - Usamos 'md:flex-row' en escritorio para que vuelvan a ser horizontales.
-            - Eliminamos el 'whitespace-nowrap' de los botones para permitir el salto de línea si es necesario.
-            - Eliminamos los separadores '|' en móvil (por defecto) y los mostramos solo en escritorio ('md:inline').
-            - Usamos 'text-center' en móvil para que el texto apilado quede centrado.
-          */}
           <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 text-base text-gray-600 text-center">
             <button type="button" onClick={() => openModal('privacy')} className="hover:text-[#591117] transition-colors cursor-pointer">
               {lang === 'en' ? 'Privacy Policy' : 'Política de privacidad'}
             </button>
-            {/* Ocultamos el separador en móvil y lo mostramos en escritorio */}
-            <span className="text-gray-300 text-lg hidden md:inline">|</span>
+            {/* Se redujo el tamaño del separador de 'text-lg' a 'text-base' */}
+            <span className="text-gray-300 text-base hidden md:inline">|</span>
             <button type="button" onClick={() => openModal('cookies')} className="hover:text-[#591117] transition-colors cursor-pointer">
               {lang === 'en' ? 'Cookie Policy' : 'Política de cookies'}
             </button>
-            <span className="text-gray-300 text-lg hidden md:inline">|</span>
+            <span className="text-gray-300 text-base hidden md:inline">|</span>
             <button type="button" onClick={() => openModal('settings')} className="hover:text-[#591117] transition-colors cursor-pointer">
               {lang === 'en' ? 'Cookie Settings' : 'Configuración de cookies'}
             </button>

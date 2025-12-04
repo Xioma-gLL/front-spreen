@@ -25,7 +25,8 @@ export default function Footer() {
           - 'items-center' asegura la alineación vertical.
           - En móvil, se sigue usando 'flex-col' para apilar, y 'items-center' para centrarlos.
         */}
-        <div className="max-w-7xl mx-auto px-6 py-1 flex flex-col md:flex-row items-center justify-center md:justify-between gap-2">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center md:justify-between gap-2">
+
           
           {/* Contenedor de Iconos Sociales (se mantiene a la izquierda/centrado en móvil) */}
           <div className="flex items-center gap-3">

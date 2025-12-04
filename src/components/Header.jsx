@@ -230,9 +230,9 @@ export default function Header() {
         </div>
       </div>
 
-      {/* ===== HEADER PRINCIPAL - ANCHO COMPLETO - AJUSTADO A H-16 ===== */}
-      <header className="bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] transition-all duration-300 **h-16**"> 
-        {/* ALTURA CAMBIADA DE h-20 A h-16 para hacerlo más delgado */}
+      {/* ===== HEADER PRINCIPAL - ANCHO COMPLETO ===== */}
+      <header className="bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] transition-all duration-300 h-20">
+        {/* h-24 cambiado a h-20 para que sea más compacto */}
         <div className="w-full px-4 sm:px-6 lg:px-10 h-full">
           <div className="flex items-center justify-between h-full">
             
@@ -259,8 +259,7 @@ export default function Header() {
                     <img
                         src={logoPlaza}
                         alt="Plaza Trujillo Hotel"
-                        className="**h-5 sm:h-6** w-auto object-contain transition-transform duration-300 group-hover:scale-105" 
-                        // Altura reducida de h-10/h-11 a h-5/h-6 (aproximadamente 3 veces más pequeño en el valor de la clase)
+                        className="h-10 sm:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105" 
                     />
                 </Link>
             </div>
@@ -303,8 +302,7 @@ export default function Header() {
                 </div>
 
                 {/* Dirección y Estrellas */}
-                <div className="hidden xl:flex flex-col items-start border-l border-gray-200 pl-6 **h-8** justify-center">
-                    {/* Ajuste de h-10 a h-8 para alineación visual con header más delgado */}
+                <div className="hidden xl:flex flex-col items-start border-l border-gray-200 pl-6 h-10 justify-center">
                     <div className="flex gap-1 text-yellow-400 mb-0.5">
                         <IconStar className="w-3.5 h-3.5" />
                         <IconStar className="w-3.5 h-3.5" />
@@ -317,8 +315,7 @@ export default function Header() {
                 </div>
 
                 {/* Botón Auth - Botón Reservar MODERNO y MÁS PEQUEÑO */}
-                <div className="flex items-center gap-4 border-l border-gray-200 pl-6 **h-8**">
-                    {/* Ajuste de h-10 a h-8 para alineación visual con header más delgado */}
+                <div className="flex items-center gap-4 border-l border-gray-200 pl-6 h-10">
                     {isAuthenticated ? (
                         <div ref={userMenuRef} className="relative">
                             <button
@@ -326,11 +323,9 @@ export default function Header() {
                                 className="flex items-center gap-3 pl-1 pr-3 py-1 rounded-full border border-gray-100 hover:border-gray-300 hover:shadow-md transition-all cursor-pointer group bg-white"
                             >
                                 {user?.photoUrl ? (
-                                <img src={user.photoUrl} alt="Avatar" className="**w-7 h-7** rounded-full object-cover" />
-                                // Avatar más pequeño (w-9 h-9 a w-7 h-7)
+                                <img src={user.photoUrl} alt="Avatar" className="w-9 h-9 rounded-full object-cover" />
                                 ) : (
-                                <div className="**w-7 h-7** rounded-full bg-[#591117] text-white flex items-center justify-center text-xs font-bold">
-                                    {/* Avatar más pequeño */}
+                                <div className="w-9 h-9 rounded-full bg-[#591117] text-white flex items-center justify-center text-sm font-bold">
                                     {user?.firstName?.charAt(0)?.toUpperCase()}{user?.lastName?.charAt(0)?.toUpperCase()}
                                 </div>
                                 )}
@@ -344,7 +339,7 @@ export default function Header() {
                             
                             {userMenuOpen && (
                                 <div className="absolute right-0 mt-4 w-64 bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100 py-2 z-50">
-                                    <div className="px-5 py-4 border-b border-gray-50 bg-gradient-to-r from-gray-50 to-white">
+                                   <div className="px-5 py-4 border-b border-gray-50 bg-gradient-to-r from-gray-50 to-white">
                                         <p className="text-sm font-bold text-gray-900">{user?.firstName} {user?.lastName}</p>
                                         <p className="text-xs text-gray-500 truncate mt-0.5">{user?.email}</p>
                                     </div>
@@ -397,10 +392,9 @@ export default function Header() {
         onClick={() => setOpen(false)}
       />
 
-      {/* 2. Panel Lateral - AQUI SE QUITA LA BARRA DE SCROLL VISUALMENTE - AJUSTADO A top-16 */}
+      {/* 2. Panel Lateral - AQUI SE QUITA LA BARRA DE SCROLL VISUALMENTE */}
       <aside 
-        className={`fixed **top-16** left-0 z-40 h-[calc(100vh-4rem)] w-full max-w-xs bg-white shadow-2xl transform transition-transform duration-500 ease-in-out lg:hidden flex flex-col overflow-y-auto ${
-        // Cambiado de top-20 a top-16 y h-[calc(100vh-5rem)] a h-[calc(100vh-4rem)] para coincidir con el nuevo header de 16 unidades
+        className={`fixed top-20 left-0 z-40 h-[calc(100vh-5rem)] w-full max-w-xs bg-white shadow-2xl transform transition-transform duration-500 ease-in-out lg:hidden flex flex-col overflow-y-auto ${
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -408,9 +402,9 @@ export default function Header() {
         <div className="flex-1 px-4 py-6">
           
           <div className="mb-4 px-2">
-              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                MENÚ
-              </span>
+             <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+               MENÚ
+             </span>
           </div>
 
           <div className="mb-6">
@@ -509,8 +503,8 @@ export default function Header() {
 
           {/* Configuración */}
           <div className="grid grid-cols-2 gap-3 mb-6">
-              {/* Idioma */}
-              <button 
+             {/* Idioma */}
+             <button 
                 onClick={() => { setLang(lang === 'en' ? 'es' : 'en'); setOpen(false) }} 
                 className="flex flex-col items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 text-gray-600 hover:border-[#591117] hover:text-[#591117] hover:shadow-sm transition-all bg-gray-50/50"
               >

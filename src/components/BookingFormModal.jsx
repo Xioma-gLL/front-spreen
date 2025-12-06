@@ -160,7 +160,9 @@ export default function BookingFormModal({ isOpen, onClose, selectedRooms, searc
         body: JSON.stringify(reservationData)
       })
 
+      console.log('Response status:', response.status)
       const data = await response.json()
+      console.log('Response data:', data)
 
       if (response.ok && data.success) {
         window.dispatchEvent(new CustomEvent('toast', {
@@ -174,7 +176,7 @@ export default function BookingFormModal({ isOpen, onClose, selectedRooms, searc
         }))
         onClose()
       } else {
-        throw new Error(data.error || 'Error al crear la solicitud')
+        throw new Error(data.error || data.message || 'Error al crear la solicitud')
       }
 
     } catch (error) {

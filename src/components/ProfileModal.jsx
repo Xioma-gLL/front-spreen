@@ -372,10 +372,11 @@ export default function ProfileModal({ isOpen, onClose, onLogout, initialSection
     }
 
     return (
-      <div className="animate-fade-in pt-6 space-y-4">
+      <div className="animate-fade-in pt-2">
         <h3 className="text-xl font-semibold text-gray-800 mb-4">Mis Reservas</h3>
-        {reservations.map((reservation) => (
-          <div key={reservation.id} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+        <div className="space-y-4 max-h-[calc(100vh-250px)] overflow-y-auto pr-2 custom-scrollbar">
+          {reservations.map((reservation) => (
+            <div key={reservation.id} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h4 className="text-lg font-semibold text-gray-800">{reservation.guestName}</h4>
@@ -415,7 +416,8 @@ export default function ProfileModal({ isOpen, onClose, onLogout, initialSection
               </div>
             )}
           </div>
-        ))}
+          ))}
+        </div>
       </div>
     )
   }

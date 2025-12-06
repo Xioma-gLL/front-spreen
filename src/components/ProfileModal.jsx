@@ -64,22 +64,26 @@ const IconArrowLeft = ({ className = 'w-6 h-6' }) => (
 )
 
 export default function ProfileModal({ isOpen, onClose, onLogout, initialSection = 'profile' }) {
-  const { user } = useAuth()
-  const [activeSection, setActiveSection] = useState(initialSection)
-  const [isEditing, setIsEditing] = useState(false)
-  const [isVisible, setIsVisible] = useState(false)
-  const [isAnimating, setIsAnimating] = useState(false)
-  
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 640)
+  const { user } = useAuth()
+  const [activeSection, setActiveSection] = useState(initialSection)
+  const [isEditing, setIsEditing] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
+  const [isAnimating, setIsAnimating] = useState(false)
+  
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 640)
 
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    phone: '',
-    address: ''
-  })
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    phone: '',
+    address: ''
+  })
 
-  useEffect(() => {
+  // Estado para reservas
+  const [reservations, setReservations] = useState([])
+  const [isLoadingReservations, setIsLoadingReservations] = useState(true)
+
+  useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 640)
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
@@ -96,26 +100,56 @@ export default function ProfileModal({ isOpen, onClose, onLogout, initialSection
     }
   }, [user])
 
-  useEffect(() => {
-    if (isOpen) {
-      setActiveSection(window.innerWidth < 640 ? 'menu' : initialSection)
-      setIsEditing(false)
-      setIsVisible(true)
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setIsAnimating(true)
-        })
-      })
-    } else {
-      setIsAnimating(false)
-      const timer = setTimeout(() => {
-        setIsVisible(false)
-      }, 300)
-      return () => clearTimeout(timer)
-    }
-  }, [isOpen, initialSection])
+  useEffect(() => {
+    if (isOpen) {
+      setActiveSection(window.innerWidth < 640 ? 'menu' : initialSection)
+      setIsEditing(false)
+      setIsVisible(true)
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsAnimating(true)
+        })
+      })
+    } else {
+      setIsAnimating(false)
+      const timer = setTimeout(() => {
+        setIsVisible(false)
+      }, 300)
+      return () => clearTimeout(timer)
+    }
+  }, [isOpen, initialSection])
 
-  if (!isVisible) return null
+  // Cargar reservas cuando se abre el modal y hay email
+  useEffect(() => {
+    const fetchReservations = async () => {
+      if (!user?.email || !isOpen) {
+        setIsLoadingReservations(false)
+        return
+      }
+
+      setIsLoadingReservations(true)
+      try {
+        const API_URL = import.meta.env.PROD 
+          ? 'https://backspring-wrc6.onrender.com/api'
+          : (import.meta.env.VITE_API_URL || 'http://localhost:8080/api')
+        
+        const response = await fetch(`${API_URL}/web-reservation-requests/by-email/${user.email}`)
+        const data = await response.json()
+        
+        if (response.ok && data.success) {
+          setReservations(data.data || [])
+        }
+      } catch (error) {
+        console.error('Error fetching reservations:', error)
+      } finally {
+        setIsLoadingReservations(false)
+      }
+    }
+
+    fetchReservations()
+  }, [user?.email, isOpen])
+
+  if (!isVisible) return null
 
   const menuItems = [
     { key: 'reservations', label: 'Mis Reservas', icon: IconCalendar },
@@ -296,23 +330,97 @@ export default function ProfileModal({ isOpen, onClose, onLogout, initialSection
     </div>
   )
 
-  const renderReservationsContent = () => (
-    <div className="animate-fade-in pt-6">
-      <div className="bg-gray-50 p-8 rounded-xl border border-gray-200 text-gray-600 text-center flex flex-col items-center">
-        <IconCalendar className="w-16 h-16 mb-6 text-gray-300" />
-        <p className="text-xl font-semibold mb-4 text-gray-800">No tienes reservas activas</p>
-        <p className="mb-6">¡Es el momento perfecto para planificar tu próxima visita!</p>
-        <button 
-          onClick={() => setActiveSection('newReservation')}
-          className="mt-2 px-6 py-2.5 bg-[#591117] text-white font-semibold rounded-xl hover:bg-[#7a171f] transition-colors cursor-pointer shadow-md"
-        >
-          Hacer una reserva
-        </button>
-      </div>
-    </div>
-  )
-  
-  const renderMobileMenu = () => (
+  const getStatusBadge = (status) => {
+    const statusConfig = {
+      pending: { label: 'Pendiente', color: 'bg-yellow-100 text-yellow-800 border-yellow-300' },
+      received: { label: 'Recibida', color: 'bg-blue-100 text-blue-800 border-blue-300' },
+      registered: { label: 'Registrada', color: 'bg-green-100 text-green-800 border-green-300' }
+    }
+    const config = statusConfig[status] || statusConfig.pending
+    return (
+      <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${config.color}`}>
+        {config.label}
+      </span>
+    )
+  }
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return ''
+    const date = new Date(dateStr)
+    return date.toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' })
+  }
+
+  const renderReservationsContent = () => {
+    if (isLoadingReservations) {
+      return (
+        <div className="animate-fade-in pt-6 flex justify-center items-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#591117]"></div>
+        </div>
+      )
+    }
+
+    if (reservations.length === 0) {
+      return (
+        <div className="animate-fade-in pt-6">
+          <div className="bg-gray-50 p-8 rounded-xl border border-gray-200 text-gray-600 text-center flex flex-col items-center">
+            <IconCalendar className="w-16 h-16 mb-6 text-gray-300" />
+            <p className="text-xl font-semibold mb-4 text-gray-800">No tienes reservas activas</p>
+            <p className="mb-6">¡Es el momento perfecto para planificar tu próxima visita!</p>
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <div className="animate-fade-in pt-6 space-y-4">
+        <h3 className="text-xl font-semibold text-gray-800 mb-4">Mis Reservas</h3>
+        {reservations.map((reservation) => (
+          <div key={reservation.id} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h4 className="text-lg font-semibold text-gray-800">{reservation.guestName}</h4>
+                <p className="text-sm text-gray-500">
+                  {reservation.documentType} {reservation.documentNumber}
+                </p>
+              </div>
+              {getStatusBadge(reservation.status)}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <p className="text-xs text-gray-500 mb-1">Check-in</p>
+                <p className="text-sm font-medium text-gray-800">{formatDate(reservation.checkIn)}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 mb-1">Check-out</p>
+                <p className="text-sm font-medium text-gray-800">{formatDate(reservation.checkOut)}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+              <div className="flex items-center gap-4 text-sm text-gray-600">
+                <span>{reservation.numRooms} habitación(es)</span>
+                <span>•</span>
+                <span>{reservation.numPeople} huésped(es)</span>
+              </div>
+              <p className="text-lg font-bold text-[#591117]">
+                S/ {reservation.totalAmount?.toFixed(2)}
+              </p>
+            </div>
+
+            {reservation.notes && (
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <p className="text-xs text-gray-500 mb-1">Notas</p>
+                <p className="text-sm text-gray-700">{reservation.notes}</p>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  const renderMobileMenu = () => (
     <div className="flex flex-col h-full animate-fade-in">
         {/* Tarjeta de Bienvenida */}
         <div className="flex items-center gap-4 mb-6 p-4 bg-[#591117]/5 rounded-xl border border-[#591117]/10">

@@ -158,7 +158,7 @@ export default function Header() {
 
       {/* ===== BARRA SUPERIOR (Top Bar) - ANCHO COMPLETO ===== */}
       <div className="bg-[#f8f9fa] border-b border-gray-100 text-[11px] uppercase tracking-wider font-semibold text-gray-500 hidden lg:block w-full">
-        <<div className="w-full px-0">
+        <div className="w-full px-0">
 
           <div className="flex items-center justify-between h-10">
             {/* Izquierda */}

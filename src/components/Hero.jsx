@@ -2,6 +2,7 @@ import Reveal from './Reveal'
 import { useI18n } from '../context/LanguageContext'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import AvailableRoomsModal from './AvailableRoomsModal'
 
 export default function Hero() {
   const { t, lang } = useI18n()
@@ -11,6 +12,56 @@ export default function Hero() {
   const [rooms, setRooms] = useState(1)
   const [checkIn, setCheckIn] = useState('')
   const [checkOut, setCheckOut] = useState('')
+  const [showModal, setShowModal] = useState(false)
+  const [availableRooms, setAvailableRooms] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  
+  const searchRooms = async () => {
+    if (!checkIn || !checkOut) {
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Por favor selecciona fechas', duration: 3000 } }))
+      return
+    }
+    const a = new Date(checkIn)
+    const b = new Date(checkOut)
+    if (a >= b) {
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'La fecha de salida debe ser posterior a la de ingreso', duration: 4000 } }))
+      return
+    }
+    
+    setIsLoading(true)
+    try {
+      const response = await fetch('http://localhost:8080/api/rooms/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          checkIn,
+          checkOut,
+          guests,
+          children,
+          rooms
+        })
+      })
+      
+      if (!response.ok) throw new Error('Error al buscar habitaciones')
+      
+      const data = await response.json()
+      setAvailableRooms(data)
+      setShowModal(true)
+    } catch (error) {
+      console.error('Error:', error)
+      window.dispatchEvent(new CustomEvent('toast', { 
+        detail: { type: 'error', message: 'Error al buscar habitaciones. Intenta de nuevo.', duration: 3000 } 
+      }))
+    } finally {
+      setIsLoading(false)
+    }
+  }
+  
+  const handleSelectRoom = (selectedRooms) => {
+    // Aquí puedes redirigir a la página de reserva con las habitaciones seleccionadas
+    console.log('Habitaciones seleccionadas:', selectedRooms)
+    navigate('/reservar', { state: { rooms: selectedRooms, checkIn, checkOut, guests, children } })
+  }
   return (
     <section className="relative min-h-[calc(100vh-64px-80px)] flex items-center justify-center">
       <div
@@ -74,30 +125,38 @@ export default function Hero() {
                   </div>
                 </div>
                 <div className="p-1.5 flex items-center">
-                  <button type="button" className="w-full md:w-auto px-4 py-2 bg-[#F26A4B] text-white text-sm rounded-none md:rounded-none md:rounded-r-xl font-semibold hover:bg-[#F21905] cursor-pointer"
-                    onClick={() => {
-                      if (!checkIn || !checkOut) {
-                        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Por favor selecciona fechas', duration: 3000 } }))
-                        return
-                      }
-                      const a = new Date(checkIn)
-                      const b = new Date(checkOut)
-                      if (a >= b) {
-                        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'La fecha de salida debe ser posterior a la de ingreso', duration: 4000 } }))
-                        return
-                      }
-                      const params = new URLSearchParams({ checkIn, checkOut, guests: guests.toString(), children: children.toString(), rooms: rooms.toString() })
-                      navigate(`/habitaciones?${params.toString()}`)
-                    }}
+                  <button 
+                    type="button" 
+                    className="w-full md:w-auto px-4 py-2 bg-[#F26A4B] text-white text-sm rounded-none md:rounded-none md:rounded-r-xl font-semibold hover:bg-[#F21905] cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    onClick={searchRooms}
+                    disabled={isLoading}
                   >
-                      {t('hero.search.search')}
-                    </button>
+                    {isLoading ? (
+                      <>
+                        <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        {lang === 'en' ? 'Searching...' : 'Buscando...'}
+                      </>
+                    ) : (
+                      t('hero.search.search')
+                    )}
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </Reveal>
       </div>
+      
+      <AvailableRoomsModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        rooms={availableRooms}
+        searchParams={{ checkIn, checkOut, guests, children, rooms }}
+        onSelectRoom={handleSelectRoom}
+      />
     </section>
   )
 }

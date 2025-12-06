@@ -3,7 +3,7 @@ import { createContext, useContext, useState, useEffect } from 'react'
 const AuthContext = createContext()
 
 // URL del API de Spring Boot
-// En producción usa la API de Render, en desarrollo usa localhost
+// En producción usa la API de Render
 const API_URL = import.meta.env.PROD 
   ? 'https://backspring-wrc6.onrender.com/api'
   : (import.meta.env.VITE_API_URL || 'http://localhost:8080/api')

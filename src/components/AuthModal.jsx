@@ -7,7 +7,7 @@ import { IoClose, IoEye, IoEyeOff } from 'react-icons/io5'
 // Asegúrate de que la ruta sea correcta
 import localLogo from '../assets/logoo.png'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api'
+const API_URL = import.meta.env.VITE_API_URL || 'https://backspring-wrc6.onrender.com/api'
 
 // ===== COMPONENTE PRINCIPAL DEL MODAL =====
 export default function AuthModal({ isOpen, onClose, initialView = 'login' }) {
@@ -395,7 +395,7 @@ function RegisterContent({ onChangeView, onSuccess }) {
   }
 
   const handleSocialRegister = (provider) => {
-    window.location.href = `http://localhost:8080/oauth2/authorize/${provider}`
+    window.location.href = `https://backspring-wrc6.onrender.com/oauth2/authorize/${provider}`
   }
 
   return (

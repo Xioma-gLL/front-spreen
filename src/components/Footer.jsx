@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import SocialIcons from './SocialIcons'
 import { useI18n } from '../context/LanguageContext'
 import PolicyModal from './PolicyModal'
 

@@ -117,13 +117,12 @@ export default function ProfileModal({ isOpen, onClose, onLogout, initialSection
 
   if (!isVisible) return null
 
-  const menuItems = [
-    { key: 'reservations', label: 'Mis Reservas', icon: IconCalendar },
-    { key: 'profile', label: 'Mi Perfil', icon: IconUser },
-    { key: 'newReservation', label: 'Nueva Reserva', icon: IconCalendarPlus },
-  ]
+  const menuItems = [
+    { key: 'reservations', label: 'Mis Reservas', icon: IconCalendar },
+    { key: 'profile', label: 'Mi Perfil', icon: IconUser },
+  ]
 
-  const getInitials = () => {
+  const getInitials = () => {
     const first = user?.firstName?.charAt(0)?.toUpperCase() || ''
     const last = user?.lastName?.charAt(0)?.toUpperCase() || ''
     return first + last
@@ -308,22 +307,6 @@ export default function ProfileModal({ isOpen, onClose, onLogout, initialSection
           className="mt-2 px-6 py-2.5 bg-[#591117] text-white font-semibold rounded-xl hover:bg-[#7a171f] transition-colors cursor-pointer shadow-md"
         >
           Hacer una reserva
-        </button>
-      </div>
-    </div>
-  )
-
-  const renderNewReservationContent = () => (
-    <div className="animate-fade-in pt-6">
-      <div className="bg-gray-50 p-8 rounded-xl border border-gray-200 text-gray-600 text-center flex flex-col items-center">
-        <IconCalendarPlus className="w-16 h-16 mb-6 text-gray-300" />
-        <p className="text-xl font-semibold mb-4 text-gray-800">¡Comienza tu nueva experiencia!</p>
-        <p className="mb-6">Selecciona las fechas y la habitación deseada para empezar.</p>
-        <button 
-          onClick={onClose}
-          className="mt-2 px-6 py-2.5 bg-[#591117] text-white font-semibold rounded-xl hover:bg-[#7a171f] transition-colors cursor-pointer shadow-md"
-        >
-          Ver habitaciones
         </button>
       </div>
     </div>

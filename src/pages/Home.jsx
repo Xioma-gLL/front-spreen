@@ -11,7 +11,6 @@ export default function Home() {
   }, [t])
   
   return (
-    // 'selection:bg-[#591117] selection:text-white' personaliza el color cuando seleccionas texto
     <div className="min-h-screen flex flex-col w-full relative overflow-x-hidden bg-white selection:bg-[#591117] selection:text-white">
       <Header />
       <main className="flex-1 w-full flex flex-col">

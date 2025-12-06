@@ -30,7 +30,7 @@ export default function Hero() {
     
     setIsLoading(true)
     try {
-      const response = await fetch('http://localhost:8080/api/rooms/search', {
+      const response = await fetch('https://backspring-wrc6.onrender.com/api/rooms/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
